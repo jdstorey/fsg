@@ -1,0 +1,26 @@
+# Dependencies
+markdown:         redcarpet
+highlighter:      rouge
+
+# Permalinks
+permalink:        pretty
+
+# Setup
+title:            QCB 508
+tagline:          "QCB 508 | Princeton University"
+description:      "<a href='https://jdstorey.github.io/fsg/'>Foundations of Statistical Genomics</a>" 
+url:              https://jdstorey.github.io
+baseurl:          /fsg
+
+author:
+  name:           'John Storey'
+
+paginate:         1000
+paginate_path:    "news/page:num/"
+
+markdown:         kramdown
+
+gems:             [jekyll-paginate]
+
+excerpt_separator: <!--more-->
+
