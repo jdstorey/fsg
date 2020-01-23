@@ -118,8 +118,8 @@ R4DS | [R for Data Science](http://r4ds.had.co.nz)
 
 | Assignment    | Due | 
 | --------------|---------------------|
-| Homework 1    | 11:59PM on March 5, 2020  |
-| Homework 2    | 11:59PM on April 16, 2020   | 
+| Homework 1    | 11:59PM on March 5  |
+| Homework 2    | 11:59PM on April 16   | 
 | Scribed Notes | See syllabus |
-| Take Home Final Exam | 11:59PM on May 16, 2020 <br> (handed out 12:00PM noon on May 13, 2020)   |
+| Take Home Final Exam | 11:59PM on May 16 <br> (handed out 12:00PM noon on May 13)   |
 
