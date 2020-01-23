@@ -14,6 +14,7 @@ Topics:
 Reading: 
 
 
+<!--
 ### Week 2
 
 Topics:  
@@ -90,6 +91,7 @@ Topics:
 
 Reading: 
 
+-->
 
 ## Text book abbreviations used above
 
