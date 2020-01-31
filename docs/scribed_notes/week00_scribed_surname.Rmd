@@ -1,0 +1,120 @@
+---
+title: "QCB 408 / 508 -- Notes on Week X"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+\providecommand{\E}{\operatorname{E}}
+\providecommand{\V}{\operatorname{Var}}
+\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\se}{\operatorname{se}}
+\providecommand{\logit}{\operatorname{logit}}
+\providecommand{\iid}{\; \stackrel{\text{iid}}{\sim}\;}
+\providecommand{\asim}{\; \stackrel{.}{\sim}\;}
+\providecommand{\xs}{x_1, x_2, \ldots, x_n}
+\providecommand{\Xs}{X_1, X_2, \ldots, X_n}
+\providecommand{\bB}{\boldsymbol{B}}
+\providecommand{\bb}{\boldsymbol{\beta}}
+\providecommand{\bx}{\boldsymbol{x}}
+\providecommand{\bX}{\boldsymbol{X}}
+\providecommand{\by}{\boldsymbol{y}}
+\providecommand{\bY}{\boldsymbol{Y}}
+\providecommand{\bz}{\boldsymbol{z}}
+\providecommand{\bZ}{\boldsymbol{Z}}
+\providecommand{\be}{\boldsymbol{e}}
+\providecommand{\bE}{\boldsymbol{E}}
+\providecommand{\bs}{\boldsymbol{s}}
+\providecommand{\bS}{\boldsymbol{S}}
+\providecommand{\bP}{\boldsymbol{P}}
+\providecommand{\bI}{\boldsymbol{I}}
+\providecommand{\bD}{\boldsymbol{D}}
+\providecommand{\bd}{\boldsymbol{d}}
+\providecommand{\bW}{\boldsymbol{W}}
+\providecommand{\bw}{\boldsymbol{w}}
+\providecommand{\bM}{\boldsymbol{M}}
+\providecommand{\bPhi}{\boldsymbol{\Phi}}
+\providecommand{\bphi}{\boldsymbol{\phi}}
+\providecommand{\bN}{\boldsymbol{N}}
+\providecommand{\bR}{\boldsymbol{R}}
+\providecommand{\bu}{\boldsymbol{u}}
+\providecommand{\bU}{\boldsymbol{U}}
+\providecommand{\bv}{\boldsymbol{v}}
+\providecommand{\bV}{\boldsymbol{V}}
+\providecommand{\bO}{\boldsymbol{0}}
+\providecommand{\bOmega}{\boldsymbol{\Omega}}
+\providecommand{\bLambda}{\boldsymbol{\Lambda}}
+\providecommand{\bSig}{\boldsymbol{\Sigma}}
+\providecommand{\bSigma}{\boldsymbol{\Sigma}}
+\providecommand{\bt}{\boldsymbol{\theta}}
+\providecommand{\bT}{\boldsymbol{\Theta}}
+\providecommand{\bpi}{\boldsymbol{\pi}}
+\providecommand{\argmax}{\text{argmax}}
+\providecommand{\KL}{\text{KL}}
+\providecommand{\fdr}{\text{FDR}}
+\providecommand{\pfdr}{{\rm pFDR}}
+\providecommand{\mfdr}{{\rm mFDR}}
+\providecommand{\bh}{\hat}
+\providecommand{\dd}{\lambda}
+\providecommand{\q}{\operatorname{q}}
+
+```{r, message=FALSE, echo=FALSE, cache=FALSE}
+# this makes the R output formatted the same as Foundations of Applied Statistics
+source("https://raw.githubusercontent.com/jdstorey/fas/master/customization/knitr_options.R")
+
+# load libraries used in this chunk
+library(gapminder) 
+```
+
+If your name is Robert Fripp and you're scribing notes for Week 3, for example, then rename this file `week03_scribed_fripp.Rmd`. Any additional files, such as data files should be included in a directory called `data/`, where this directory is in the same location as `week03_scribed_fripp.Rmd`. The data would then be accessed below by `./data/dataset.csv`, for example. Do not deviate from this convention. By default the working directory when compiking a `.Rmd` file is the location of the `.Rmd` file. 
+
+## Summary
+
+A summary of the week's topics discussed below (like an abstract). Maybe you want to include a list of the topics as well:
+
+- Probability
+- Random Variables
+- Hardy-Weinberg equilibrium 
+
+## First topic
+
+There are $\LaTeX$ macros above to make each person's notes similar in format. Examples:
+$$
+\E[X] = \sum_{k} k \Pr(X=k),
+$$
+$$
+\fdr = \E \left[ \frac{V}{R \vee 1} 1(R > 0) \right].
+$$
+
+Of course, equations can be inline as well, $n \rightarrow \infty$.
+
+### First subsection
+
+```{r}
+before1980 <- gapminder %>% filter(year < 1980) %>% 
+  select(lifeExp) %>% unlist()
+after1980 <- gapminder %>% filter(year > 1980) %>% 
+  select(lifeExp) %>% unlist()
+qqplot(before1980, after1980); abline(0,1)
+```
+
+### Second subsection
+
+## Second topic
+
+### First subsection
+
+### Second subsection
+
+## Etc.
+
+## Session Information
+
+```{r}
+sessionInfo()
+```
+
+  
+  
+  
+
