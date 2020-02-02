@@ -21,6 +21,10 @@ Reading:
 
 - [*FAS*](https://jdstorey.org/fas/index.html), Chapters 1--3, 10--18
 
+Optional Reading:  
+
+- *MSMGA*, Chapter 1.1--1.3
+
 <!--
 ### Week 2
 
