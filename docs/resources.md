@@ -9,7 +9,8 @@ title: Resources
 
 - GitHub
     - [Course Web Site](https://github.com/jdstorey/fsg)
-    - [Book](https://github.com/jdstorey/fas)
+    - [Foundations of Applied Statistics](https://jdstorey.github.io/fas/)
+    - [YARP, Yet Another R Primer](https://jdstorey.github.io/yarp/)
 - [Blackboard](https://blackboard.princeton.edu/webapps/pu-courseredirect-bb_bb60/find.jsp?course_id=QCB408-QCB508_S2020)
 - [Piazza](https://piazza.com/princeton/spring2020/qcb408508)
 
