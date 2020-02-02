@@ -11,8 +11,15 @@ title: Schedule
 
 Topics:  
 
-Reading: 
+- Introduction to statistics and genomics
+- Probability
+- Random variables
+- Genotype and allele frequencies
+- Hardy-Weinberg equilibrium
 
+Reading:  
+
+- [*FAS*](https://jdstorey.org/fas/index.html), Chapters 1--3, 10--18
 
 <!--
 ### Week 2

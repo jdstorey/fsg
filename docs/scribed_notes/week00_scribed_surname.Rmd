@@ -66,7 +66,7 @@ source("https://raw.githubusercontent.com/jdstorey/fas/master/customization/knit
 library(gapminder) 
 ```
 
-If your name is Robert Fripp and you're scribing notes for Week 3, for example, then rename this file `week03_scribed_fripp.Rmd`. Any additional files, such as data files should be included in a directory called `data/`, where this directory is in the same location as `week03_scribed_fripp.Rmd`. The data would then be accessed below by `./data/dataset.csv`, for example. Do not deviate from this convention. By default the working directory when compiking a `.Rmd` file is the location of the `.Rmd` file. 
+If your name is Robert Fripp and you're scribing notes for Week 3, for example, then rename this file `week03_scribed_fripp.Rmd`. Any additional files, such as data files should be included in a directory called `data/`, where this directory is in the same location as `week03_scribed_fripp.Rmd`. The data would then be accessed below by `./data/dataset.csv`, for example. Do not deviate from this convention. Also, do not use a data file name that has already been used (see [here](https://github.com/jdstorey/fsg/tree/master/docs/scribed_notes/data/) for those already in use). By default the working directory when compiling a `.Rmd` file is the location of the `.Rmd` file. 
 
 ## Summary
 
