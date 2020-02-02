@@ -7,7 +7,9 @@ title: Books
 
 The main reading material for the course will come from:  
 
-[Foundations of Applied Statistics](https://jdstorey.github.io/fas/)
+[Foundations of Applied Statistics](https://jdstorey.github.io/fas/)  
+
+[YARP, Yet Another R Primer](https://jdstorey.github.io/yarp/)  
 
 The following books are for optional, supplemental readings.  They are all available for free, but note that some require a Princeton account to obtain them for free.
 
