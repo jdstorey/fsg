@@ -19,20 +19,29 @@ Topics:
 
 Reading:  
 
-- [FAS](https://jdstorey.org/fas/index.html), Chapters 1--3, 10--18
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 1--3, 10--14
 
 Optional Reading:  
 
 - MSMGA, Chapter 1.1--1.3
 
-<!--
 ### Week 2
 
 Topics:  
 
+- Joint distributions of random variables
+- Sums of random variables
+- Convergence of random variables
+- Multivariate Normal and Dirichlet distributions
+- Hardy-Weinberg equilibrium and non-random mating
+- Probabilistic models of RNA-seq data
+
 Reading: 
 
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 15--18
 
+
+<!--
 ### Week 3
 
 Topics:  
