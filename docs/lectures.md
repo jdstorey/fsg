@@ -7,7 +7,7 @@ PDF files of the handwritten lecture notes will be posted here as they become av
 
 | Week  | Lecture Notes | Student Summaries |  
 |-------|---------------|-------------------|  
-|  1 | (week1.pdf)[./lecture_notes/week1.pdf] |  |  
+|  1 | [week1.pdf](./lecture_notes/week1.pdf) |  |  
 |  2 |  |  |  
 |  3 |  |  |  
 |  4 |  |  |  
