@@ -2,7 +2,7 @@
 title: "QCB 408 / 508 -- Notes on Week X"
 author: "Your Name"
 date: "`r Sys.Date()`"
-output: html_document
+output: pdf_document
 ---
 
 \providecommand{\E}{\operatorname{E}}
@@ -78,7 +78,7 @@ A summary of the week's topics discussed below (like an abstract). Maybe you wan
 
 ## First topic
 
-There are $\LaTeX$ macros above to make each person's notes similar in format. Examples:
+There are LaTeX macros above to make each person's notes similar in format. Examples:
 $$
 \E[X] = \sum_{k} k \Pr(X=k),
 $$
