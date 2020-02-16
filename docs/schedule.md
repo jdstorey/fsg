@@ -30,88 +30,26 @@ Optional Reading:
 Topics:  
 
 - Joint distributions of random variables
-- Sums of random variables
-- Convergence of random variables
-- Multivariate Normal and Dirichlet distributions
 - Hardy-Weinberg equilibrium and non-random mating
-- Probabilistic models of RNA-seq data
 
 Reading: 
 
-- [FAS](https://jdstorey.org/fas/index.html), Chapters 15--18
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 15
 
 
-<!--
 ### Week 3
 
 Topics:  
 
-Reading: 
-
-
-### Week 4
-
-Topics:  
+- Sums of random variables
+- Convergence of random variables
+- Multivariate Normal and Dirichlet distributions
+- Probabilistic models of RNA-seq data
 
 Reading: 
 
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 16--21
 
-### Week 5
-
-Topics:  
-
-Reading: 
-
-
-### Week 6
-
-Topics:  
-
-Reading: 
-
-
-### Week 7
-
-Topics:  
-
-Reading: 
-
-
-### Week 8
-
-Topics:  
-
-Reading: 
-
-
-### Week 9
-
-Topics:  
-
-Reading: 
-
-
-### Week 10
-
-Topics:  
-
-Reading: 
-
-
-### Week 11
-
-Topics:  
-
-Reading: 
-
-
-### Week 12
-
-Topics:  
-
-Reading: 
-
--->
 
 ## Text book abbreviations used above
 
