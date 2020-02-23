@@ -51,6 +51,20 @@ Reading:
 - [FAS](https://jdstorey.org/fas/index.html), Chapters 16--21
 
 
+### Week 4
+
+Topics:  
+
+- Goals of inference
+- Confidence intervals
+- Hypothesis testing
+- Maximum likelihood estimation
+
+Reading: 
+
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 22--28
+
+
 ## Text book abbreviations used above
 
 | Abbreviation | Full Title |
