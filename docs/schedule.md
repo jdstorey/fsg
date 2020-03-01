@@ -64,6 +64,18 @@ Reading:
 
 - [FAS](https://jdstorey.org/fas/index.html), Chapters 22--28
 
+### Week 5
+
+Topics:  
+
+- Hypothesis testing
+- Bayesian inference
+- Bayesian estimation and classification
+- Priors
+
+Reading: 
+
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 30--38
 
 ## Text book abbreviations used above
 
