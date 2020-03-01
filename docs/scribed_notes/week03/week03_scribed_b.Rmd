@@ -1,0 +1,373 @@
+---
+title: "QCB 408 / 508 -- Notes on Week 3"
+author: "Student"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document
+---
+
+
+\providecommand{\E}{\operatorname{E}}
+\providecommand{\V}{\operatorname{Var}}
+\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\se}{\operatorname{se}}
+\providecommand{\logit}{\operatorname{logit}}
+\providecommand{\iid}{\; \stackrel{\text{iid}}{\sim}\;}
+\providecommand{\asim}{\; \stackrel{.}{\sim}\;}
+\providecommand{\xs}{x_1, x_2, \ldots, x_n}
+\providecommand{\Xs}{X_1, X_2, \ldots, X_n}
+\providecommand{\bB}{\boldsymbol{B}}
+\providecommand{\bb}{\boldsymbol{\beta}}
+\providecommand{\bx}{\boldsymbol{x}}
+\providecommand{\bX}{\boldsymbol{X}}
+\providecommand{\by}{\boldsymbol{y}}
+\providecommand{\bY}{\boldsymbol{Y}}
+\providecommand{\bz}{\boldsymbol{z}}
+\providecommand{\bZ}{\boldsymbol{Z}}
+\providecommand{\be}{\boldsymbol{e}}
+\providecommand{\bE}{\boldsymbol{E}}
+\providecommand{\bs}{\boldsymbol{s}}
+\providecommand{\bS}{\boldsymbol{S}}
+\providecommand{\bP}{\boldsymbol{P}}
+\providecommand{\bI}{\boldsymbol{I}}
+\providecommand{\bD}{\boldsymbol{D}}
+\providecommand{\bd}{\boldsymbol{d}}
+\providecommand{\bW}{\boldsymbol{W}}
+\providecommand{\bw}{\boldsymbol{w}}
+\providecommand{\bM}{\boldsymbol{M}}
+\providecommand{\bPhi}{\boldsymbol{\Phi}}
+\providecommand{\bphi}{\boldsymbol{\phi}}
+\providecommand{\bN}{\boldsymbol{N}}
+\providecommand{\bR}{\boldsymbol{R}}
+\providecommand{\bu}{\boldsymbol{u}}
+\providecommand{\bU}{\boldsymbol{U}}
+\providecommand{\bv}{\boldsymbol{v}}
+\providecommand{\bV}{\boldsymbol{V}}
+\providecommand{\bO}{\boldsymbol{0}}
+\providecommand{\bOmega}{\boldsymbol{\Omega}}
+\providecommand{\bLambda}{\boldsymbol{\Lambda}}
+\providecommand{\bSig}{\boldsymbol{\Sigma}}
+\providecommand{\bSigma}{\boldsymbol{\Sigma}}
+\providecommand{\bt}{\boldsymbol{\theta}}
+\providecommand{\bT}{\boldsymbol{\Theta}}
+\providecommand{\bpi}{\boldsymbol{\pi}}
+\providecommand{\argmax}{\text{argmax}}
+\providecommand{\KL}{\text{KL}}
+\providecommand{\fdr}{\text{FDR}}
+\providecommand{\pfdr}{{\rm pFDR}}
+\providecommand{\mfdr}{{\rm mFDR}}
+\providecommand{\bh}{\hat}
+\providecommand{\dd}{\lambda}
+\providecommand{\q}{\operatorname{q}}
+
+```{r, message=FALSE, echo=FALSE, cache=FALSE}
+# this makes the R output formatted the same as Foundations of Applied Statistics
+source("https://raw.githubusercontent.com/jdstorey/fas/master/customization/knitr_options.R")
+
+```
+
+# Summary
+
+* Models for RNA-seq data
+  + Two-step process
+  + Negative Binomial
+* Facts about Random Variables
+
+# Models for RNA-seq data
+Say we are given $m$ genes (indexed by $i$) and $n$ observations (indexed by $j$). These observations could be at any scale -- cells, samples, organisms, etc. -- but we will assume that they all come from the same biological condition (i.e., the same statistical population). We observe $Y_{ij}$ RNA-seq read counts for gene $i$ in observation $j$. $Y_{ij}$ is a random variable, and in this week's lectures we saw two alternative ways to model these read counts.
+
+## Two-step process
+For a gene $i$, let $a_i$ represent the true proportion of mRNA transcript counts that are from gene $i$. (Note that because we are considering only a single population, there is only one $a_i$ for each gene.) Because $a_i$ is a proportion, $\sum_{i=1}^m a_i = 1$, and in general for RNA-seq data, most $a_i$ are small.
+
+In this highly idealized instructive model, we assume that an RNA-seq experiment is composed of exactly the following two steps:
+\begin{enumerate}
+  \item Sample cells and mRNA molecules from the biological sample.
+  \item Sequence the mRNA molecules to obtain counts.
+\end{enumerate}
+
+### Step 1: Sample cells and mRNA molecules
+Let the unobserved random variable $M_j$ represent the (ground truth) total number of mRNA molecules sampled for observation $j$. Let the unobserved random variable $X_{ij}$ represent the number of copies of gene $i$ in observation $j$. Assuming that mRNA molecules are sampled uniformly at random (all cells and all molecules are equally likely to be sampled),
+$$ X_{ij}|M_j \sim \operatorname{Binomial}(M_j, a_i)$$
+Because $M_j$ is large (millions of molecules) and $a_i$ is small, we can approximate this distribution as the following Poisson distribution\footnote{We use $\asim$ to indicate ``approximately distributed as."}:
+$$ X_{ij}|M_j \asim \operatorname{Poisson}(M_ja_i)$$
+Observe that both distributions have the same expected value $M_j a_i$, and that the binomial variance $M_j a_i (1 - a_i)$ is approximately the Poisson variance $M_j a_i$ because $1 - a_i \approx 1$. See the final section of these notes for a visual explanation of the Poisson approximation for the binomial distribution.
+
+We introduce the unobserved random variable $\pi_{ij}$ to represent the proportion of molecules in observation $j$ that are from gene $i$, i.e.,
+$$ \pi_{ij} = \frac{X_{ij}}{M_j} $$
+
+Clearly, $\pi_{ij}$ is closely related to our quantity of interest, $a_i$. Indeed,
+%TODO: check this derivation with notes when they're posted
+\begin{align*}
+\E \left[\pi_{ij}\right] &= \E \left[\E \left[ \pi_{ij} | M_j \right] \right] \\ 
+&= \E\left[ \frac{M_j a_i}{M_j} | M_j \right] \\
+&= \E \left[ \frac{M_j a_i}{M_j} \right] = \E \left[ a_i \right] = a_i
+\end{align*}
+That is, the expected value of $\pi_{ij}$ is $a_i$. Using the law of total variance, we can write the variance of $\pi_{ij}$ as
+$$ \V(\pi_{ij}) = \E \left[ \V \left( \pi_{ij} | M_j \right) \right]  + \V \left( \E  \left[ \pi_{ij} | M_j \right] \right) $$
+Note that for this equation, all variances are taken over $\pi_{ij}$ and all expectations are taken over $M_j$.
+We can evaluate the second term as follows using the expectation we just saw above:
+$$ \V \left( \E  \left[ \pi_{ij} | M_j \right] \right) = \V(a_i) = 0$$
+where the last equality follows from the fact that $a_i$ is constant with respect to $\pi_{ij}$. Then, only the first term remains, so 
+\begin{align*}
+  \V(\pi_{ij}) &= \E \left[ \V \left( \pi_{ij} | M_j \right) \right]
+  =\E \left[ \V \left( \frac{X_{ij}}{M_j} | M_j \right) \right] = \E \left[ \frac{1}{M_j^2}\V \left( X_{ij} | M_j \right) \right] \approx  \E \left[ \frac{1}{M_j^2} \left(a_i M_j \right) \right] = \frac{a_i}{M_j} \end{align*}
+where the $\approx$ corresponds to the Poisson approximation for the binomial distribution. This variance is conceptually similar to the ``biological variance," i.e., the variance attributable to biology before any additional variance is introduced by the measurement process.
+
+### Step 2: Sequence mRNA molecules and obtain counts
+In this section, we assume that mRNA molecules are sampled uniformly at random for sequencing and subsequent measurement (ignoring any issues like gene length, GC bias, etc.). Let the random variable $D_j$ be the total number of reads we obtain from observation $j$. Because we observe this quantity, we will write it as $d_j$ and treat it as a constant. Let $Y_{ij}$ be a random variable representing the number of RNA-seq reads from gene $i$ in observation $j$. While we observe $y_{ij}$ for each RNA-seq experiment, we would like to model the distribution of these counts to obtain population-level information, i.e., $a_i$.
+\begin{align*}
+Y_{ij} | \pi_{ij}, d_j &\sim \operatorname{Binomial}(d_j, \pi_{ij}) \\
+Y_{ij} | \pi_{ij}, d_j &\asim \operatorname{Poisson}(d_j \pi_{ij})
+\end{align*}
+The second line is the same Poisson approximation as before, given that $d_j$ is large and $\pi_{ij}$ is small.
+We can then compute the expected value and variance of $Y_{ij}$. 
+The expected value is relatively straightforward:
+\begin{align*}
+\E \left[Y_{ij} \right] &= \E \left[\E \left[Y_{ij} | D_j = d_j, \pi_{ij} \right] \right] = \E \left[d_j \pi_{ij} \right] = d_j \E \left[\pi_{ij} \right] = d_j a_i \\
+\end{align*}
+The variance, however, has a few tricks to it (again beginning with the law of total variance):
+\begin{align*}
+\V (Y_{ij}) &= \E \left[ \V \left( Y_{ij} | D_j = d_j, \pi_{ij} \right) \right] + \V \left( \E \left[ Y_{ij} | D_j = d_j, \pi_{ij} \right] \right) \\ 
+&\approx \E \left[d_j \pi_{ij} \right] + \V \left( d_j \pi_{ij} \right) \\
+&= d_j a_i + d_j^2 a_i \E \left[\frac{1}{M_j} \right]
+\end{align*}
+Note that the $\approx$ in the second line again represents the Poisson approximation for the binomial distribution, which allows us to substitute $d_j \pi_{ij}$ into the first term. The second term is then simplified using the expected value we just computed.
+Because $\V(Y_{ij}) > \E[Y_{ij}]$, this marginal distribution of $Y_{ij}$ is an example of what is called an \emph{overdispersed} Poisson distribution (compared to a Poisson-distributed random variable $X$ where $\V(X) = \E[X]$).
+
+Knowing that $\pi_{ij}$ is closely related to our quantity of interest $a_i$, we would like to estimate it using the following estimator:
+$$\hat{\pi}_{ij} = \frac{Y_{ij}}{d_j} $$
+We can see immediately using $\E[Y_{ij}]$ that the expected value of this estimator is $\pi_{ij}$, thus it is \emph{unbiased}.
+The variance of this estimator is as follows:
+\begin{align*}
+\V(\hat{\pi}_{ij}) &= \frac{1}{d_j^2} \V(Y_{ij}) = \frac{a_i}{d_j} + \V(\pi_{ij}) \\
+&= \frac{a_i}{d_j} + a_i \E\left[\frac{1}{M_j} \right] \end{align*}
+The second term in this variance the same biological variance -- $\V(\pi_{ij})$ -- that we saw above in Step 1. Thus, we can (roughly) refer to the remaining term as the technical variance, i.e., the variance attributable to the measurement process.
+
+Now that we have this estimator for $\pi_{ij}$, we would like to use it to estimate $a_i$. Recall that
+
+* $\pi_{ij}$ is the proportion of reads from gene $i$ in observation $j$,
+* all of the observations $j$ are from the same biological condition,
+* and $a_i$ is the proportion of mRNA molecules from gene $i$ in this biological condition.
+
+Combining these facts brings us to the following estimator:
+$$ \hat{a}_i = \frac{1}{n} \sum_{j = 1}^n \hat{\pi}_{ij}$$
+Again, because $\E[\hat{\pi}_{ij}] = \E[\pi_{ij}] = a_i$, $\E[\hat{a}_i] = a_i$. The variance of $\hat{a}_i$ is then
+$$\V(\hat{a}_i) = \V(\frac{1}{n} \sum_{j = 1}^n \hat{\pi}_{ij}) = \frac{1}{n^2} \V(\sum_{j = 1}^n \hat{\pi}_{ij}) = \frac{1}{n^2} \sum_{j = 1}^n \V( \hat{\pi}_{ij}) $$
+We can then separate $\V(\hat{pi}_{ij})$ into the technical component (first term) and the biological component (term corresponding to biological variance (second term) to split $\V(\hat{a}_i)$ as follows:
+$$\V(\hat{a}_i) = 
+\frac{a_i}{n^2} \sum_{j = 1}^n \frac{1}{d_j} + \sum_{j = 1}^n \frac{\V( \pi_{ij})}{n^2} $$
+The first term again corresponds to the technical variance in our estimator $\hat{a}_i$, and the second term corresponds to the biological variance.
+
+We assume that the total number $M_j$ of mRNA molecules for each observation $j$ are independent and identically distributed (iid). Under this assumption, $\E \left[ \frac{1}{M_1} \right] = \E \left[\frac{1}{M_2} \right] = \ldots = \E \left[\frac{1}{M_n} \right]$.
+
+In order to summarize the relationship between the mean and the variance in this model of RNA-seq data, we will introduce a few general quantities and define them in the context of this model.
+The first is the \emph{coefficient of variation} $\operatorname{CV}$, which we define as follows:
+$$\operatorname{CV} = \frac{\sqrt{\V(\pi_{ij})}}{a_i} $$
+This quantity is referred to as the \emph{biological} coefficient of variation. Then, 
+$$\left(\operatorname{CV}\right)^2 = \frac{\V(\pi_{ij})}{a_i^2} = \frac{1}{a_i} \E \left[\frac{1}{M_j}  \right] \equiv \phi_i $$
+where the rightmost equals sign denotes a definition, i.e., we define $\phi_i$ to be $\frac{1}{a_i} \E \left[\frac{1}{M_j}  \right]$.
+We define $\mu_{ij} = d_j a_i$, i.e., $\mu_{ij}$ is the population mean proportion $a_i$ for gene $i$ times the observed read depth $d_j$ for observation $j$.
+
+We can then express the variance of $Y_{ij}$ in terms of these quantities:
+\begin{align*}
+\V(Y_{ij}) &= d_j a_i + d_j^2 \V(\pi_{ij}) \\
+&= d_j a_i + (d_j a_i)^2 \frac{\V(\pi_{ij})}{a_i^2} \\
+&= \mu_{ij} + \mu_{ij}^2 \phi_i
+\end{align*}
+The parameter $phi_i$ in this model is referred to as the \emph{dispersion parameter}, in that it determines how the variance is scaled by the square of the mean. In practice, it is normally inferred by ``borrowing strength" across genes that are assumed to have similar values of $\phi_i$.
+The parameter $\phi_i$ is also an example of a \emph{nuisance parameter} in the context of statistical inference, meaning that while it is part of the model and thus must be inferred, it is not a quantity of interest in that knowing it does not yield additional insight into the population.
+One of the key insights of this model is the \emph{mean-variance relationship} -- the mean appears in the variance, particularly the square of the mean. In general a strong mean-variance relationship complicates statistical inference, and we will see that this particular relationship with the square of the mean also appears in alternative models of RNA-seq data.
+
+## Negative binomial model
+### Negative binomial model for RNA-seq data
+We will now turn to an alternative model for RNA-seq data, which relies on the \emph{negative binomial} distribution. Consider a sequence of Bernoulli trials with a success probability $p$. Rather than model the number of successes in a fixed number of trials (as in the Binomial distribution), instead we model the number $Y$ of \emph{failures} before the $r$th success. This value $Y$ is a random varaible distributed according to the negative binomial distribution:
+$$ Y \sim \operatorname{NegBin}(r, p) $$
+$$ \operatorname{Pr}(Y = y) = {r + y - 1 \choose y}p^r (1-p)^y  $$
+Note that this distribution is only defined for non-negative integers $y$, i.e., $y \in \mathbb{N}$.
+
+The expected value and variance of $Y$ are then
+\begin{align*}
+\E[Y] &= \frac{r(1-p)}{p}  \\
+\V(Y) &= \frac{r(1-p)}{p^2} \\
+\end{align*}
+Let $\mu = \frac{r(1-p)}{p}$, and let $\phi = \frac{1}{r}$. Then, we can express the variance in terms of $\mu$ and $\phi$ as in the previous model to obtain the same mean-variance relationship:
+$$\V(Y) = \mu + \mu^2 \phi$$
+Thus, we can model RNA-seq data as a negative binomial distribution.
+$$Y_{ij} \sim \operatorname{NegBin}(r_i, p_{ij}) $$
+where $\mu_{ij} = \frac{r_i (1 - p_{ij})}{p_{ij}}$ and $\phi_i = \frac{1}{r_i}$. Again, $\phi_i$ is a nuisance parameter; sometimes it is modeled as a gene-specific parameter as in this formulation (indexed by gene $i$), and other times it is modeled as a single dispersion parameter that is shared across genes.
+
+### Compound gamma-Poisson formulation
+The negative binomial distribution is a special case of the gamma\footnote{As we saw previously with the beta distribution, the gamma distribution can take many different shapes as its parameters $\alpha$ and $\beta$ are varied. However, unlike the beta distribution, the gamma distribution has support over all positive real numbers rather than just $(0, 1)$ as in the beta distribution.}-Poisson distribution
+\begin{align*}
+Y | \lambda &\sim \operatorname{Poisson}(\lambda) \\
+\lambda &\sim \operatorname{Gamma}(\alpha, \beta)
+\end{align*}
+Under this distribution, in which the random variable $Y_{ij}$ is distributed according to a Poisson distribution paramterized by a gamma random variable $\lambda_{ij}$, $Y_{ij}$ is marginally a gamma-Poisson random varaible.
+Note that the negative binomial distribution is a \emph{special case} of the gamma-Poisson distribution (i.e., for any negative binomial distribution, there exists a specific parameterization of the gamma-Poisson distribution that is equivalent to this negative binomial distribution).
+
+The gamma pdf, expected value, and variance are as follows:
+$$f(\lambda; \alpha, \beta) = \frac{\lambda^{\beta - 1}e^{- \lambda / \alpha}}{\alpha^\beta \Gamma(\beta)}, \lambda > 0 $$
+$$ \E[\lambda] = \alpha \beta, \V(\lambda) = \alpha^2 \beta$$
+
+The gamma-Poisson pdf, expected value, and variance are as follows:
+$$f(y; \alpha, \beta) = \frac{\Gamma(y + \beta)\alpha^y}{\Gamma(\beta)(1 + \alpha)^{\beta + y}y!} $$
+$$ \E[Y] = \alpha \beta, \V(Y) = \alpha \beta + \alpha^2 \beta$$
+
+Let $\mu = \alpha \beta$ and $\phi = \frac{1}{\beta}$. Then, as before, we have
+$$\V(Y) = \mu + \mu^2 \phi$$
+Even under this completely different model, we obtain the same mean-variance relationship as in the two-step model.
+
+Now that we have this result that is identical to the two-step model of RNA-seq data, we can add subscripts and map these variables back to the two-step model.
+The random variable $Y_{ij}$ represents the number of reads from gene $i$ in observation $j$, as before.
+\begin{align*}
+Y_{ij} | \lambda_{ij} &\sim \operatorname{Poisson}(\lambda_{ij}) \\
+\lambda_{ij} &\sim \operatorname{Gamma}(\alpha, \beta)
+\end{align*}
+The random variable $\lambda_{ij}$ corresponds to the quantity $\pi_{ij}d_j$ in the previous model, i.e., $\lambda_{ij} = \pi_{ij}d_j$ .\footnote{Here $Y_{ij}$ is explicitly Poisson-distributed according to $\lambda_{ij}$, whereas in the previous model the Poisson relationship between $Y_{ij}$ and $\pi_{ij}d_j$ relied on the Poisson approximation for the binomial distribution.} 
+Observe that:
+
+* $\E [ \pi_{ij}d_j] = a_i d_j$ (from the previous section)
+* $\E[\lambda_{ij}] = \alpha \beta$ (by definition of the gamma distribution)
+* $\mu_{ij} = a_i d_j$ (from the previous section)
+
+Thus, $\mu_{ij} = a_i d_j = \alpha \beta$.
+We can also unite the two definitions of $\phi_i$ to obtain 
+$$\phi_i = \frac{1}{\beta} = \frac{1}{a_i} \E \left[\frac{1}{M_j}  \right] $$
+Finally, we have that
+\begin{align*}
+\beta_{ij} &= a_i \E \left[ \frac{1}{M_j}  \right]^{-1} \\
+\alpha_{ij} &= a_i d_j \cdot \frac{1}{a_i} \E \left[\frac{1}{M_j} \right] = d_j \E \left[\frac{1}{M_j} \right] \\
+\lambda_{ij} &\sim \operatorname{Gamma}(\alpha_{ij}, \beta_{ij})
+\end{align*}
+
+### Mean-variance relationships in general
+Consider a random variable $Y$ representing count data. Suppose $Y$ is distributed as follows:
+$$ Y | \lambda \sim \operatorname{Poisson}(\lambda)$$
+Here, $\lambda$ is a positve random variable. The variance of $Y$ can then be computed using the law of total variance:
+\begin{align*}
+\V(Y) &= \E \left[ \V \left(Y | \lambda \right) \right] +   \V \left( \E \left[ Y | \lambda \right] \right) \\
+\V(Y) = \E[\lambda] + \V (\lambda)
+\end{align*}
+Since $\lambda > 0$, the mean $\E [\lambda]$ of its distribution will always be positive, and thus it will always appear in the variance of $Y$. This implies that any Poisson model for a count variable will have a mean-variance relationship which complicates inference.
+
+# Facts about random varaibles
+## Sums of random variables
+If $X$ is a random variable and $a, b$ are constants, then
+\begin{align*}
+\E [a + bX] &= a + b \E[X] \\
+\V (a + bX) &= b^2 \V(X)
+\end{align*}
+
+Let $\Xs$ be $n$ random variables Then,
+\begin{align*}
+\E \left[ \sum_{i = 1}^n X_i \right] &= \sum_{i = 1}^n \E\left[  X_i \right] \\
+\V \left( \sum_{i = 1}^n X_i \right) &= \sum_{i = 1}^n \V(X_i) + \sum_{i \neq j} \Cov(X_i, X_j) \\
+&= \sum_{i = 1}^n \sum_{j = 1}^n \Cov(X_i, X_j)
+\end{align*}
+When $\Xs$ are independent\footnote{In this section, when we say a group of random variables are independent, we require only pairwise independence.}, then $\Cov(X_i, X_j) = 0$ for $i \neq j$, so
+$$ \V \left( \sum_{i = 1}^n X_i \right) =   \sum_{i = 1}^n \V \left( X_i \right)$$
+
+Let $\overline{X}_n = \frac{1}{n} \sum_{i = 1}^n X_i$. Suppose $\Xs$ are independent. Then, 
+$$\E \left[\overline{X}_n \right] = \E \left[ \frac{1}{n}\sum_{i = 1}^n X_i \right] = \frac{1}{n}\sum_{i = 1}^n \E \left[ X_i \right] $$
+Thus, when $\E[X_1] = \E[X_2] = \ldots = \E[X_n] = \theta$, $\E [\overline{X}_n] = \theta$.
+$$\V(\overline{X}_n) = \frac{1}{n^2} \sum_{i = 1}^n \V \left( X_i \right) $$
+Thus, when $\V(X_1) = \V(X_2) = \ldots = \V(X_n)  = \tau^2$, $\V (\overline{X}_n)= \tau^2/n$. Roughly speaking, this result indicates that the mean becomes a better estimator (i.e., the variance decreases) of the population mean as the number $n$ of data points increases.
+
+## Convergence of random variables
+Let $Z_1, Z_2, \dots$ be a sequence of random variables. For example, $Z_n$ could be the mean of the first $n$ data points, i.e., $Z_n = \overline{X}_n$. Alternatively, $Z_n \sim \operatorname{Binomial}(n, p)$ with some $p$.
+
+### Convergence in Distribution
+\{Z_n\} converges in distribution to the random variable $W$ (written as: $Z_n \xrightarrow{D} W$ as $n \rightarrow \infty$) if
+$$F_{Z_n}(y) = \operatorname{Pr}(Z_n \le y) \rightarrow \operatorname{Pr}(W \le y) = F_W(y) $$
+for all $y \in \mathrm{R}$, $n \rightarrow \infty$.
+
+### Convergence in Probability
+\{$Z_n$\} converges in probability to the random variable $W$ (written as: $Z_n \xrightarrow{P} W$ as $n \rightarrow \infty$) if
+$$\operatorname{Pr}(|Z_n - W| \le \epsilon) \rightarrow 1  $$
+as $n \rightarrow \infty$ for $\epsilon > 0$.
+
+Note that convergence in probability is a stronger result than convergence in distribution: rather than $Z_n$ converging to a distribution that looks like $W$, instead the value of $Z_n$ is converging to the value of $W$. For a fixed number $\theta$, we can also have $Z_n \xrightarrow{P} \theta$. 
+
+### Almost sure convergence
+\{$Z_n$\} converges "almost surely" (a.s.) or "with probability 1" to $W$ (written as $Z_n \xrightarrow{a.s.} W$) if 
+$$ \operatorname{Pr}(\{\omega: |Z_n(\omega) - W(\omega)| \xrightarrow{n \rightarrow \infty} 0 \}) = 1 $$
+This result is again even stronger than the last, saying that there is asymptotically no event $\omega$ with positive probability mass where $Z_n(\omega)$ differs from $W(\omega)$.
+
+## Results regarding random variables
+### Strong Law of Large Numbers
+Suppose $\Xs$ are i.i.d. random variables with population mean $E[X_i] = \mu$ where $E\left[|X_i| \right] < \infty$. Then
+$$\overline{X}_n \xrightarrow{a.s.} \mu \textrm{, as } n \rightarrow \infty $$
+
+### Central limit theorem
+Suppose $\Xs$ are i.i.d. random variables with population mean $E[X_i] = \mu$ and population variance $\V(X_i) = \sigma^2$.
+Then, as $n \rightarrow \infty$,
+\begin{align*}
+\sqrt{n} \left(\overline{X}_n - \mu \right) &\xrightarrow{D} \operatorname{Normal}(0, \sigma^2) \\
+\frac{\overline{X}_n - \mu}{\sigma / \sqrt{n}} &\xrightarrow{D} \operatorname{Normal}(0, 1)
+\end{align*}
+Here is the derivation of the second (standard normal) result, using the first result and several of the rules outlined above.
+\begin{align*}
+&\V \left(\overline{X}_n - \mu \right) = \V \left(\overline{X}_n \right) = \frac{\sigma^2}{n} \\
+&\V \left( \frac{\overline{X}_n - \mu}{\sqrt{\sigma^2 / n}} \right) = \frac{1}{\sigma^2/n} \V(\overline{X}_n) = 1 \\
+&\frac{\overline{X}_n - \mu}{\sqrt{\sigma^2 / n}} = \sqrt{n} \left( \frac{\overline{X}_n - \mu}{\sigma} \right) \xrightarrow{D} \operatorname{Normal}(0, 1)
+\end{align*}
+
+## Useful facts about normal random variables
+Suppose $\Xs \iid \operatorname{Normal}(\mu, \sigma^2)$. Then
+$$\E \left[ \overline{X}_n \right] = \mu $$
+$$\V(\overline{X}_n) = \frac{\sigma^2}{n} $$
+$$\overline{X}_n \sim \operatorname{Normal}\left(\mu, \frac{\sigma^2}{n}\right) $$
+because $X_1 + X_2 + \ldots + X_n \sim \operatorname{Normal}(n\mu, n\sigma^2)$, and $aX_1 + b \sim \operatorname{Normal}(a\mu + b, a^2\sigma^2)$.
+
+# Poisson approximation for the binomial distribution
+
+In this section, we illustrate the Poisson approximation for the binomial distribution using some visual examples. This approximation works better for large $n$ (many Bernoulli trials) and small $p$ (low probability of success in each trial). To see this, first we look at an example where $n$ is relatively small and $p$ relatively large. Note that the expected value of both distributions is $10$.
+
+```{r}
+library(ggplot2)
+library(reshape2)
+xmax <- 20
+x <- seq(0, xmax, 1)
+density_binom1 <- dbinom(x = x, 20, 0.5)
+density_pois1 <- dpois(x = x, 10)
+df1 <- data.frame(x=x, binomial = density_binom1, Poisson = density_pois1)
+plot1 <- ggplot(dat = melt(df1, id.var="x"), aes(x=x, y=value)) + 
+  geom_line(aes(colour=variable, group=variable)) + 
+  ggtitle("binomial(0.5, 20) vs. Poisson(10)") + 
+  xlab("Successes") + ylab("Density") + xlim(c(0, xmax))
+plot1
+```
+
+As you can see, while the distributions roughly place probability mass in similar places, they differ in structure: the Poisson distribution has a larger variance than the binomial distribution. The Poisson variance is the same as the expected value, so $10$, whereas the binomial variance is $20 \cdot 0.5 \cdot 0.5 = 5$.
+
+Now, we consider a binomial distribution with small $p = 0.01$ and large $n = 1000$. Note that the expected value is again 10 for both distributions, but now the binomial variance is $1000 \cdot 0.01 \cdot 0.99 = 9.9$ which is very close to the Poisson variance of $10$.
+
+```{r}
+xmax <- 20
+x <- seq(0, xmax, 1)
+density_binom2 <- dbinom(x = x, 1000, 0.01)
+density_pois2 <- dpois(x = x, 10)
+df2 <- data.frame(x=x, binomial = density_binom2, Poisson = density_pois2)
+plot2 <- ggplot(dat = melt(df2, id.var="x"), aes(x=x, y=value)) + 
+  geom_line(aes(colour=variable, group=variable)) + 
+  ggtitle("binomial(0.01, 1000) vs. Poisson(10)") + 
+  xlab("Successes") + ylab("Density") + xlim(c(0, xmax))
+plot2
+```
+As you can see, the distributions appear virtually identical.
+
+Let $X_1 \sim \operatorname{binomial}(p, n)$, and $X_2 \sim \operatorname{Poisson}(pn)$. Then, consider the ratio between the variance of $X_1$ and the variance of $X_2$:
+$$ \frac{\V(X_1)}{\V(X_2)} = \frac{np(1-p)}{np} = 1-p $$
+Thus, the Poisson distribution has a larger variance than the Poisson distribution by a factor of $1-p$. In our first example, $1-p = 1- 0.5 = 0.5$, so the Poisson distribution had double the variance of the binomial distribution. However, in the second example, $1 - p = 0.99$, so the variance of the Poisson distribution was off by only $1\%$ from that of the binomial distribution.
+Note that this ratio does not depend on $n$, so a larger number of trials will not improve the approximation.
+
+## Session Information
+
+```{r}
+sessionInfo()
+```
+
+  
+  
+  
+
