@@ -70,12 +70,23 @@ Topics:
 
 - Hypothesis testing
 - Bayesian inference
-- Bayesian estimation and classification
-- Priors
 
 Reading: 
 
 - [FAS](https://jdstorey.org/fas/index.html), Chapters 30--38
+
+### Week 6
+
+Topics:  
+
+- Bayesian estimation and classification
+- Priors
+- EM algorithm
+- Markov chain Monte Carlo
+
+Reading: 
+
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 34--47
 
 ## Text book abbreviations used above
 
