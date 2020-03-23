@@ -88,6 +88,23 @@ Reading:
 
 - [FAS](https://jdstorey.org/fas/index.html), Chapters 34--47
 
+### Week 7
+
+Topics:  
+
+- Nonparametric vs parametric methods
+- *t* distribution
+- Goodness of fit
+- Exact tests
+- Permutation tests
+- Empirical distribution functions
+- Bootstrap
+
+Reading: 
+
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 29, 30, 48--53
+
+
 ## Text book abbreviations used above
 
 | Abbreviation | Full Title |

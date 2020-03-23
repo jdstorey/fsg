@@ -13,7 +13,7 @@ PDF files of the handwritten lecture notes will be posted here as they become av
 |  4 | [week04.pdf](./lecture_notes/week04.pdf) |  |  
 |  5 | [week05.pdf](./lecture_notes/week05.pdf) |  |  
 |  6 | [week06.pdf](./lecture_notes/week06.pdf) |  |  
-|  7 |  |  |  
+|  7 | [week07.pdf](./lecture_notes/week07.pdf) |  |  
 |  8 |  |  |  
 |  9 |  |  |  
 | 10 |  |  |  
