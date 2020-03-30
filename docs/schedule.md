@@ -104,6 +104,17 @@ Reading:
 
 - [FAS](https://jdstorey.org/fas/index.html), Chapters 29, 30, 48--53
 
+### Week 8
+
+Topics:  
+
+- Principal component analysis
+- Linear statistical modeling
+
+Reading: 
+
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 9, 54--62
+
 
 ## Text book abbreviations used above
 
