@@ -1,0 +1,469 @@
+---
+title: "QCB 408 / 508 -- Notes on Week 5"
+author: "Yushi Tang"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+header-includes:
+   - \usepackage{bm, bbm, amsthm, amsmath, mathrsfs}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, message=FALSE, echo=FALSE, cache=FALSE}
+# this makes the R output formatted the same as Foundations of Applied Statistics
+source("https://raw.githubusercontent.com/jdstorey/fas/master/customization/knitr_options.R")
+```
+
+
+# Summary
+
+For this week, we mainly introduced the fundamental elements of hypothesis testing and the basic idea of Bayesian inference. We discussed two specific scenarios for conducting hypothesis testing in class, including the generalized likelihood ratio test and pivotal statistic hypothesis test, as the practical examples for this topic. In this note, I also added several extra examples and settings for test design. Since the p-value is an important concept for hypothesis testing which could also be easily misused, I made more supplementary information about p-value, especially in the setting of multiple hypothesis tests. Last but not least, we touched gently the general framework of Bayesian Inference in class. I annotated the class material for Bayesian Inference with some of my own thoughts. Please check the content table above for the complete list of topics. All material could be categorized into two parts:
+
+* 1). The concepts and examples from **Class**: 
+    + Definition 1.1, 1.7, 1.8, 1.9, 1.10, 1.12, 2.1, 2.2, 2.4, 3.1, 3.2, 3.4, 4.1
+    + Example 1.2, 2.6, 3.3, 3.5, 3.6  
+
+* 2). The concepts and examples from **Yushi**:
+    + Definition 1.4, 1.5, 
+    + Example 1.3, 1.6, 1.11, 1.13, 2.3, 2.5, 2.7, 4.2
+    + Remark 1.12, 2.1, 2.3 (proof), 4.3
+
+# Details
+
+## Hypothesis Testing I: General Framework
+
+
+**Motivation.** Generally speaking, we want to test whether our parameters follow some specific laws or not. As for simple cases, we aim at making probablistic statements about the value of the parameters of interest with respect to categories (or sets) of interests.
+
+
+_Remark._ When we say simple, we refer to hypothesis that could be defined in term of a single value. On the opposite side, we have complex hypothesis testing, which refer to testing hypothesis that are defined in term of a collection of values.
+
+**Definition 1.1** (Simple Hypothesis). Let $\boldsymbol{X}=(X_1,X_2,...,X_n)\sim \mathscr{F}_{\theta}$. A simply hypothesis test could be defined as $H_0$ in testing
+$$H_0:\theta=\theta_0\,\,\,\textnormal{vs.}\,\,\,H_1:\theta=\theta_1$$
+where $\theta_0$ is the null value and $\theta_1$ is the alternative value.
+
+**Example 1.2** (Binomial Test). Suppose $\boldsymbol{X}=(X_1,X_2,...,X_n)\stackrel{i.i.d.}{\sim} \textnormal{Binomial}(p)$. A simple hypothesis test could be testing
+$$H_0:p=1\,\,\,\textnormal{vs.}\,\,\,H_1:p=2$$
+where $p_0=1$ is the null value and $p_1=2$ is the alternative value.
+
+**Example 1.3** (Normal Test). Suposse $\boldsymbol{X}=(X_1,...,X_n)\stackrel{i.i.d.}{\sim} \mathcal{N}(\theta,1)$. A simple hypothesis test could be testing
+$$H_0: \theta=1/2\,\,\,\textnormal{vs.}\,\,\,H_1:\theta=2$$
+
+_Remark._ Simple hypothesis testing is basically a classification problem. We observed the data. Then our goal is to collect the information showing that the alternative hypothesis $H_1$ (could be considered as category 1) is favored than the null hypothesis $H_0$ (could be considered as category 0) or the other way. The key is to use the likelihood to evaluate which category is preferred. It is reasonable to conduct all inference through the likelihood function. 
+
+**Definition 1.4** (Hypothesis Test) Under the same setting in the definition for symple hypothesis, let $\boldsymbol{X}=(X_1,...,X_n) \sim \mathscr{F}_{\theta}$, $\theta \in \Theta$, where the p.d.f./p.m.f. could be written as $f(\boldsymbol{x}|\theta)$, we can construct
+\begin{align}
+\textnormal{Null Hypothesis } &H_0:\theta \in \Theta_0\,\,\,\textnormal{vs.} \nonumber \\
+\textnormal{Alternative Hypothesis } &H_1: \theta \in \Theta_1,\nonumber
+\end{align}
+where $\Theta_0 \subset \Theta$, $\Theta_1 \subset \Theta$, and $\Theta_0 \cap \Theta_1=\emptyset$. Often we have $\Theta_1=\Theta_0^c=\Theta-\Theta_0$. Under this setting, we define the hypothesis test as a rule that directs us to not reject $H_0$ or reject $H_0$ defined by specifying a rejection region / significance region, $\Gamma_c$, of sample outcomes. Now we can make a decision based on observed data as
+
+\begin{align}
+\underbar{\textbf{x}}\in \Gamma_c &\Rightarrow\,\,\,\textnormal{reject } H_0 \nonumber \\
+\underbar{\textbf{x}}\notin \Gamma_c &\Rightarrow\,\,\,\textnormal{not reject } H_0 \nonumber 
+\end{align}
+
+_Remark._ Now we can consider simple hypotheses as $H_0$ where $\Theta_0$ contains a single element.
+
+**Definition 1.5** (Composite Hypothesis). Under the setting of Definition 1.4, If $\Theta_0$ contains more than one possible value in $\Theta$, the $H_0$ is called a **composite hypothesis**. 
+
+**Example 1.6** (Binomial Test Revision). Consiter the same setting in Example 1.2, a composite hypothesis test could be testing 
+$$H_0:p\leq 1\,\,\,\textnormal{vs.}\,\,\,H_1:p>2$$
+
+Since we touched the concept of significance regions in Definition 1.4, we can now define it formally. 
+
+**Definition 1.7** (Significance Regions). Define 
+\begin{equation}
+\Gamma_c=\{\underbar{\textbf{x}}:\mathcal{L}(\theta;\underbar{\textbf{x}})/\mathcal{L}(\theta_0;\underbar{\textbf{x}})\geq c\},\,\,\,c \geq 0
+\tag{1.1}
+\end{equation}
+where
+$$\Gamma_{c'}\geq \Gamma_c\,\,\,\textnormal{if}\,\,\,c'\leq c.$$
+Then $\Gamma_c$ as a function of $c\geq 0$ forms a rested set of significance region. In other word, if we write
+\begin{equation}
+    S(\underbar{\textbf{x}}) = \frac{\mathcal{L}(\theta;\underbar{\textbf{x}})}{\mathcal{L}(\theta_0;\underbar{\textbf{x}})},
+    \tag{1.2}
+\end{equation}
+then we acquire $S(x)\geq c$ which would capture $\Gamma_c$ as the critical region.
+
+_Remark._ $S(\underbar{\textbf{x}})=\mathcal{L}(\theta;\underbar{\textbf{x}})/\mathcal{L}(\theta_0;\underbar{\textbf{x}})$ is an example of a test statistic.
+
+\begin{table}[ht]
+\centering
+\caption{Four scenarios of hypothesis testing}
+\begin{tabular}{|r||c|c|} \hline 
+& Test is significant & Test is not significant \\ \hline
+$H_0$ is true & false positive & true negative \\ \hline 
+$H_1$ is true & true positive & false negative \\ \hline
+\end{tabular}
+\end{table}
+
+**Definition 1.8** (False Positive Rate / Type I Error Rate). First, we define the false positive as type I error. Then, define
+\begin{equation}
+    \textnormal{FP rate} := \textnormal{Type I error rate} = \int_{\tau_c}f(\underbar{\textbf{x}};\theta_0)dx=\mathbb{P}(\underbar{\textbf{x}}\in \Gamma_c;\theta=\theta_0)
+    \tag{1.3}
+\end{equation}
+
+Ideally, the type I error shouuld be small.
+
+**Definition 1.9** (False Negative Rate / Type II Error Rate). Similar as before, we can define the false negative as type II error. Then, define
+\begin{equation}
+    \textnormal{FN rate} := \textnormal{Type II error rate}=1-\int_{\tau_c}f(x;\theta_1)dx=1-\mathbb{P}(\underbar{\textbf{x}}\in \Gamma_c;\theta=\theta_1)
+    \tag{1.4}
+\end{equation}
+
+Ideally, we want both Type I and Type II errors to have low probability.
+
+
+**Definition 1.10** (Power).
+\begin{equation}
+    \textnormal{Power}:=1-\textnormal{FN rate}=1-\textnormal{Type II error rate}=\mathbb{P}(\underbar{\textbf{x}}\in \Gamma_c;\theta=\theta_1)
+    \tag{1.5}
+\end{equation}
+
+**Example 1.11** (Power Function and Type I Error). A practical setting could be counting the total number of successes in 5 Bernoulli trials as $X$. Suppose $X \sim \textnormal{Binomial}(5,\theta)$ and we want to test
+$$H_0:\theta \leq 1/2\,\,\,\textnormal{vs.}\,\,\,H_1:\theta > 1/2$$
+where $\Theta_0=[0,1/2]$, $\Theta_1=(1/2,1]$. Suppose we define significance region as $\Gamma_c=\{3,4,5\}$, then we can derive the power function as
+$$\beta(\theta)=\mathbb{P}(\underbar{x}\in\{3,4,5\};\theta)=\sum_{x=3}^5{5 \choose x}\theta^x(1-\theta)^{5-x}$$
+$$\textnormal{Type I Error} = \alpha=\sup_{\theta \in \Theta_0}\beta(\theta)= \sup_{\theta \in \Theta_0}\sum_{x=3}^5{5 \choose x}\theta^x(1-\theta)^{5-x}=0.5$$
+
+
+**Theorem 1.12** (Neyman-Pearson Lemma) Let $\Gamma_c=\{\underbar{\textbf{x}}:\mathcal{L}(\theta_1;\underbar{\textbf{x}})/\mathcal{L}(\theta_0;\underbar{\textbf{x}})\geq c\}$ as the "most powerful" significant regions. Given a false positive rate, the highest power possible is $\Gamma_c$
+
+_Remark 1.12._ The Neyman-Pearson Lemma establishes existence and uniqueness of an optimal testing procedure in the context of simple hypothesis testing. It provides the theoretical basis to construct optimal test statistics for the hypothesis testing problems.
+
+**Example 1.13** (Normal Testing with Neyman-Pearson Lemma). Let $\boldsymbol{X}=(X_1,...,X_n)\stackrel{i.i.d.}{\sim} \mathcal{N}(\mu,\sigma^2)$, where $\sigma^2$ is known and $\theta=\mu \in \Theta=\mathbb{R}$. With Neyman-Pearson Lemma, we can develope the test statistic as
+\begin{align}
+\frac{\mathcal{L}(\theta_1;\underbar{\textbf{x}})}{\mathcal{L}(\theta_0;\underbar{\textbf{x}})} &= \frac{(2\pi \sigma^2)^{-\frac{n}{2}}\exp[-\frac{1}{2\sigma^2}\sum_{i=1}^n(x_i-\theta_1)^2]}{(2\pi \sigma^2)^{-\frac{n}{2}}\exp[-\frac{1}{2\sigma^2}\sum_{i=1}^n(x_i-\theta_0)^2]} \nonumber \\
+&= \frac{\exp[-\frac{1}{2\sigma^2} \sum_{i=1}^n(x_i-\bar{x})^2-\frac{n}{2\sigma^2}(\bar{x}-\theta_1)^2]}{\exp[-\frac{1}{2\sigma^2} \sum_{i=1}^n(x_i-\bar{x})^2-\frac{n}{2\sigma^2}(\bar{x}-\theta_0)^2]} \nonumber \\
+&= \exp\{-\frac{n}{2\sigma^2}[(\bar{x}-\theta_1)^2-(\bar{x}-\theta_0)^2]\} \nonumber \\
+&= \exp\{\frac{n}{2\sigma^2}[(\theta_1-\theta_0)(\bar{x}-\frac{\theta_1+\theta_0}{2})]\}. \nonumber
+\end{align}
+Then the "most powerful" significant region could be written as
+\begin{equation}
+\Gamma_c=\{\exp\{\frac{n}{2\sigma^2}[(\theta_1-\theta_0)(\bar{x}-\frac{\theta_1+\theta_0}{2})]\}\geq c\}=\{\bar{x}\geq \frac{2\sigma^2\log c}{n(\theta_1-\theta_0)}+\frac{1}{2}(\theta_1+\theta_0)\}
+\nonumber
+\end{equation}
+where $c$ is chosen so that the test has size / type I error as $\alpha$.
+
+\clearpage
+
+## Hypothesis Testing II: Generalized Likelihood Ratio Test
+
+**Motivation.** Let $\Theta$ be the set of all possible $\theta$, $\Theta_0$ be the null values, and $\Theta_1$ be the alternative values. Directly we have $\Theta_0 \cap \Theta_1=\emptyset$, and $\Theta_0 \cup \Theta_1=\Theta$. We want to find an efficient way to test
+$$H_0: \theta \in \Theta_0\,\,\,\textnormal{vs.}\,\,\, H_1:\theta \in \Theta_1$$
+
+**Definition 2.1** (Null Distribution). The null distribution is the probability distribution of the test-statistic when $H_0$ is true. We can derive an approximate null distribution by taking $n \to \infty$ (i.e. $\theta \in \Theta_0$).
+
+**Definition 2.2** (Generalized likelihood ratio test). The generalized likelihood ratio test has the test statistic as
+\begin{equation}
+    \lambda(\underbar{x})=\frac{\max_{\theta \in \Theta}\mathcal{L}(\theta;\underbar{x})}{\max_{\theta \in \Theta_0}\mathcal{L}(\theta;\underbar{x}})
+    \tag{2.1}
+\end{equation}
+which is equivalent to the test statistic as
+\begin{equation}
+    \lambda(\underbar{x}) = \frac{\mathcal{L}(\hat{\theta}_{MLE};\underbar{x})}{\mathcal{L}(\hat{\theta}_{0,MLE};\underbar{x})}
+    \tag{2.2}
+\end{equation}
+When $H_0$ is true, the test statistic will converge in distribution to a $\chi^2$-distribution. i.e.
+\begin{equation}
+    2\log (\lambda(\underbar{x})) \stackrel{d}{\to} \chi_{\nu}^2
+    \tag{2.3}
+\end{equation}
+where $\nu=\dim(\Theta)-\dim(\Theta_0)$. 
+
+_Remark 2.1._ Here ( [paper link](https://arxiv.org/pdf/1808.09171.pdf) ) might be the 7 ways to show the pearson independent test and $\chi^2$ approximation. To answer Prof. Storey's question in the class, my favorite one is using the characteristic function to prove. Please correct me if this is not what we talked about during the class.
+
+_Remark.2.2._ There is usually (i.e. almost every time we can see in real life) a one-to-one correspondence between the test-statistic and the significant regions s.t. the larger the test-statistic is, the smaller the significant region would be.
+
+_Remark 2.3._ Under the setting of generalized likelihood ratio test, we have
+\begin{equation}
+    \textnormal{Type I error rate}=\int_{\Gamma_c}f(\underbar{x};\theta_0)dx\approx \int_{\Gamma_c}g(\underbar{x})dx\,\,\,as\,\,\,n\to \infty \tag{2.4}
+\end{equation}
+where $\Gamma_c=\{\underbar{x}:\lambda(\underbar{x})\geq c\}$ and $g(\underbar{x})$ is the p.d.f for $\chi_{\nu}^2$-distribution.
+
+We can actually prove equation (2.3) as below.
+
+\begin{proof}
+Let $Q_n=2\log(\lambda(\underbar{\textbf{x}}))$, then we can write $Q_n$ as
+\begin{equation}
+Q_n=\log(]lambda(\underbar{\textbf{x}}))=2[\ell(\hat{\theta}|\underbar{\textbf{x}})-\ell(\theta_0|\underbar{\textbf{x}})]
+\nonumber
+\end{equation}
+where $\ell$ denotes the log-likelihood function. We can expand $\ell(\theta_0|\underbar{\textbf{x}})$ in a Taylor series about $\theta_0=\hat{\theta}$. According to Taylor's theorem, there is a value $\tilde{\theta}$ between $\theta_0$ and $\hat{\theta}$ s.t.
+\begin{equation}
+\ell(\theta_0|\underbar{\textbf{x}})=\ell(\hat{\theta}|\underbar{\textbf{x}})+\frac{\partial}{\partial \theta}\ell(\hat{\theta}|\underbar{\textbf{x}})(\theta_0-\hat{\theta})+\frac{1}{2}\frac{\partial^2}{\partial \theta^2}\ell(\tilde{\theta}|\underbar{\textbf{x}})(\theta_0-\hat{\theta})^2. \nonumber
+\end{equation}
+Since $\frac{\partial}{\partial\theta}\ell(\hat{\theta}|\underbar{\textbf{x}})=0$ for MLE, then we have
+\begin{equation}
+Q=-\frac{\partial^2}{\partial \theta^2}\ell(\tilde{\theta}|\underbar{\textbf{x}})(\hat{\theta}-\theta_0)^2=n(-\frac{1}{n}\frac{\partial^2}{\partial\theta^2}\ell(\tilde{\theta}|\underbar{\textbf{x}}))\stackrel{\mathbb{P}}{\to}\mathcal{I}(\theta_0)
+\tag{2.5}
+\end{equation}
+where $\mathcal{I}(\theta_0)=\lim_{n\to\infty}n^{-1}I_n(\theta_0)$ is the limiting average information under $H_0$. Considering that
+\begin{equation}
+\mathcal{I}(\theta_0)[\sqrt{n}(\hat{\theta}-\theta_0)]^2 \stackrel{d}{\to}\chi_1^2, \nonumber
+\end{equation}
+together with the Slutsky's theorem, we can derive that under $H_0$
+\begin{equation}
+Q \stackrel{d}{\to}\chi_1^2, \nonumber
+\end{equation}
+\end{proof}
+
+**Example 2.3** (Likelihood Ratio Test for Exponential Distribution). Suppose $\boldsymbol{X}=(X_1,...,X_n) \stackrel{i.i.d.}{\sim}\textnormal{Exponential}(\lambda)$, where we can write the p.d.f. as $f_X(x;\lambda)=\exp\{-x/\lambda\}/\lambda$. Consider testing
+$$H_0:\lambda=1\,\,\,\textnormal{vs.}\,\,\,H_1:\lambda\neq1,$$
+let us try to develop a likelihood ratio test. We can then write the log-likelihood function as
+$$\ell(\lambda;\underbar{\textbf{x}})=-n\log(\lambda)-\sum_{i=1}^n \underbar{x}_i/\lambda,$$
+and the score function as
+$$U(\lambda;\underbar{\textbf{x}})=\frac{\partial}{\partial\lambda}\ell(\lambda;\underbar{\textbf{x}})=-\frac{n}{\lambda}+\frac{\sum_{i=1}^n\underbar{x}_i}{\lambda^2}$$
+Setting the score function to 0, we derive the MLE as
+$$\hat{\lambda}=\bar{x},$$
+
+check the second derivative of log-likelihood function as $\frac{\partial^2}{\lambda^2}\ell(\hat{\lambda};\underbar{\textbf{x}})=-\frac{n}{\bar{x}}<0$, thus we obtained the MLE. Then taking the negative partial derivative of the score, we have the observed information as
+$$-\frac{\partial^2}{\lambda^2}\ell(\lambda;\underbar{\textbf{x}})=-\frac{n}{\lambda^2}+\frac{2\sum_{i=1}^n\underbar{x}_i}{\lambda^3}$$
+Under the MLE, we have
+$$-\frac{\partial^2}{\lambda^2}\ell(\hat{\lambda};\underbar{\textbf{x}})=\frac{n}{\bar{x}}$$
+which satisfies
+$$-n^{-1}\frac{\partial^2}{\lambda^2}\ell(\hat{\lambda};\underbar{\textbf{x}})=\bar{x}^{-1}\stackrel{\mathbb{P}}{\to}\mathcal{I}(\lambda_0),$$
+then we have
+$$\mathcal{I}(\lambda_0)[\sqrt{n}(\hat{\lambda}-\lambda_0)]\stackrel{d}{\to}\chi_1^2$$
+
+we can then develope the test statistic for the likelihood ratio test as
+$$Q=2[\ell(\hat{\lambda};\underbar{x})-\ell(\lambda_0;\underbar{x})]=2[-n\log(\bar{x})-n+n\bar{x}]=2n[\bar{x}-1-\log(\bar{x})]\stackrel{d}{\to}\chi_1^2$$
+under $H_0$.
+
+**Definition 2.4** (P-Value). The p-value is the minimum type I error rate obtainable when calling a test significant based on data $\underbar{x}$. More formally, let $X_1^{*},X_2^{*},...,X_n^{*}\sim \mathscr{F}_{\theta_0}$, if test statistic $S(\underbar{x})$ satisfies that the larger $S(\underbar{x})$ would yield smaller significant region. In other word, we can write p-value here as
+\begin{equation}
+    p-value(\underbar{x})=\mathbb{P}(S(\underbar{x}^{*})\geq S(\underbar{x});\theta_0)
+    \tag{2.5}
+\end{equation}
+where we take $S(\underbar{X}^{*})$ as random and $S(\underbar{X})$ as observed.
+
+_Remark._ Inappropriate interpretation of p-value is very common, even in some high-profile scientific papers and reports. Here we provide some intuitive interpretation for p-value. It we generate data from the null distribution, p-value could be considered as the probability that the test statistic based on generated data is greater or equal to the observed test statistics.
+
+**Example 2.5** (P-Value for Normal Distribution Test). Let $\boldsymbol{X}=(X_1,...,X_n)\stackrel{i.i.d.}{\sim}\mathcal{N}(\theta,1)$, where $\theta \in\mathbb{R}$. Consider testing hypothesis
+$$H_0:\theta\leq 2\,\,\,\textnormal{vs.}\,\,\,H_1:\theta>2$$
+with the significance region as $\Gamma_c=\{\boldsymbol{\textbf{x}}:\bar{x}\geq c\}$ with size $\alpha=0.5$. We can summarize the testing results by p-value as
+\begin{align}
+p-value &= \sup_{\theta \in \Theta_0}\mathbb{P}_{\theta}[\bar{X}\geq \bar{x}_{obs}] \nonumber \\
+&= \mathbb{P}[\bar{X}\geq \bar{x}_{obs}|\theta=2] \nonumber \\
+&= \mathbb{P}(\bar{X}-2\geq \bar{x}_{obs}-2|\theta=2) \nonumber \\
+&= \mathbb{P}(\frac{\bar{X}-2}{\sqrt{1/n}}\geq \frac{\bar{x}_{obs}-2}{\sqrt{1/n}}|\theta=2) \nonumber \\
+&= \mathbb{P}(Z\geq \frac{\bar{x}_{obs}-2}{\sqrt{1/n}}) \nonumber
+\end{align}
+where $\bar{X}$ is a $\mathcal{N}(\theta,1/n)$ r.v., $\bar{x}_{obs}$ is the observed value of $\bar{X}$ from the sample, and $Z \sim\mathcal{N}(0,1)$ is a standard normal distributed r.v.
+
+Then, if $n=20$ and we observe $\bar{x}_{obs}=2.95$, we can calculate the p-value as
+$$p-value=\mathbb{P}[Z\geq \frac{2.95-2}{\sqrt{1/20}}]=\mathbb{P}(Z\geq 4.25)=0.00001.$$
+
+If we observe $\bar{x}_{obs}=2.38$, then we can calculate the p-value as
+
+$$p-value=\mathbb{P}[Z\geq \frac{2.38-2}{\sqrt{1/20}}]=\mathbb{P}(Z\geq 1.70)=0.045.$$
+
+From this example, we can see that p-value actually gives us a quantitative measure of how unusual our observed data are under the assumption that the null hypothesis is true.
+
+**Example 2.6** (Test for Hardy Weinberg Equilibrium, HWE) Recall the general setting of $HWE$ as below. We observe that $X_1,X_2, ...,X_n \stackrel{i.i.d.}{\sim}\mathscr{F}_{\theta}$, where $X_i \in \{0,1,2\}$, $\theta=\{r_0,r_1\}$ which is a two-dimensional parameter space. We have
+\begin{equation}
+    \mathbb{P}(X=k)=r_k,\,\,k=0,1,2
+    \nonumber
+\end{equation}
+where $r_2=1-r_0-r_1$, $\dim (\Theta)=2$. Now we might want to construct the null hypothesis. Let $p=\frac{r_1}{2}+r_2$, our goal is to test 
+$$H_0:X\sim \textnormal{Binomial}(2,p)\,\,\,\textnormal{vs.}\,\,\,H_1:X\sim \textnormal{Multinomial}(1, (r_0,r_1,r_2))$$
+i.e. we are trying to test
+$$H_0:\theta \in \{\{p^2,2p(1-p)\},\,\textnormal{where }p=\frac{r_1}{2}+r_2\}\,\,\,\textnormal{vs.}\,\,\,H_1:\textnormal{not }H_0$$
+For the observed data, we define that
+$$n_0:=\#\{X_i=0\},\,\,n_1:=\#\{X_i=1\}\,\,n_2:=\#\{X_i=2\},\,\,n=n_0+n_1+n_2$$
+Under the unconstrained way of calculation (i.e. considering inbreeding while conducting calculation), we derive the MLE as
+$$\textnormal{MLE}:\,\,\hat{r}_k=\frac{n_k}{n},\,\,\,k=0,1,2.$$
+Under the constrained way of calculation, we derive the MLE as
+$$\textnormal{MLE}:\,\,\hat{r}_0^0=(1-\hat{p}^2),\,\,\hat{r}_1^0=2\hat{p}(1-\hat{p}),\,\,\hat{r}_2^0=\hat{p}^2,\,\,\textnormal{where}\,\,\hat{p}=\frac{n_1/2+n_2}{n}$$
+Then we have the likelihood function as
+\begin{equation}
+    \mathcal{L}(\underbar{r};\underbar{x})\propto r_0^{n_0}r_1^{n_1}r_2^{n_2}
+    \nonumber
+\end{equation}
+Now we can write the test statistic as
+\begin{equation}
+    \lambda(\underbar{x})=\frac{\hat{r}_0^{n_0}\hat{r}_1^{n_1}\hat{r}_2^{n_2}}{(\hat{r}_0^0)^{n_0}(\hat{r}_1^0)^{n_1}(\hat{r}_2^0)^{n_2}}=\frac{\hat{r}_0^{n_0}\hat{r}_1^{n_1}\hat{r}_2^{n_2}}{(1-\hat{p})^{2n_0}(2\hat{p}(1-\hat{p}))^{n_1}(\hat{p}^2)^{n_2}}
+    \nonumber
+\end{equation}
+Then the null distribution should be approximately a $\chi_{\nu}^2$-distribution, i.e.
+\begin{equation}
+    2\log (\lambda(\underbar{x}))\sim \chi_{\nu}^2
+    \nonumber
+\end{equation}
+where $\nu=\dim(\Theta)-\dim(\Theta_0)=2-1=1$. Note that here $\dim(\Theta_0)=1$ since there is only one allele frequency so that we only have one-dimensional parameter.
+
+**Example 2.7** (P-value for Multiple Hypothesis Testing). This is my favorite topic about p-value and hypothesis testing. I also think this is a good summary example about all we learned in this week so I post it here. Consider a multiple hypothesis testing problem, which is very common in statistical genetics analysis, where $H_0$ is simple and $\{T_k:1\leq k\leq K\}$ are $K$ independent continuously distributed test statistics for $H_0$. Let $\alpha(T_k)$ denote the p-value for the $k$-th test statistic. We can show that 
+- (a) $\alpha(T_1)\sim \textnormal{Uniform}(0,1)$
+- (b) $-2\sum_{k=1}^K\log(\alpha(T_k))\sim\chi_{2K}^2$
+\begin{proof}
+For (a), recall that for a simple hypothesis, the p-value for $T_1=t$ could be written as
+$$\alpha(t)=\mathbb{P}[T_1(X)>t]=1-F_{T_1}(t)$$
+where $F_{T_1}(t)$ is the c.d.f. of the statistic $T_1$. Obviously, the probability that the p-value is outside [0,1] should be 0. For $t\in (0,1)$ we have
+\begin{align}
+\mathbb{P}[\alpha(T_1)<t] &= \mathbb{P}[1-F_{T_1}(T_1)\leq t] \nonumber\\
+&= \mathbb{P}[F_{T_1}(T_1)\geq 1-t] \nonumber \\
+&= \mathbb{P}[T_1 \geq F_{T_1}^{-1}(1-t)] \nonumber \\
+&= 1-\mathbb{P}[T_1<F_{T_1}^{-1}(1-t)] \nonumber \\
+&= 1-F_{T_1}(F_{T_1}^{-1}(1-t)) \nonumber \\
+&= 1-(1-t) \nonumber \\
+&= t \nonumber 
+\end{align}
+which is the p.d.f. of a standard Uniform random variable.
+
+For (b), let $X\sim \textnormal{Uniform}(0,1)$ and $Y=-2\log(X)$. Then we have
+\begin{align}
+\mathbb{P}[Y\leq y] &= \mathbb{P}[-2\log(X)\leq y] \nonumber \\
+&= \mathbb{P}[X \geq e^{-y/2}] \nonumber \\
+&= (1-e^{-y/2})\mathbbm{1}_{0<y<1}\cdot e^{-y/2} \nonumber \\
+&= (1-e^{-y/2})\mathbbm{1}_{y>0} \nonumber
+\end{align}
+which is the exponential distribution as $Y\sim \textnormal{Exponential}(2)\stackrel{d}{=}\textnormal{Gamma}(1,2)$. Since each $\alpha(T_k)$ is a standard Uniform according to (a), the $\sum_{k=1}^K-2\log(\alpha(T_k))$ is a sum of $k$ Gamma r.v.'s with parameters (1,2), i.e. $\textnormal{Gamma}(K,2)\stackrel{d}{=}\chi_{2K}^2$.
+\end{proof}
+
+\clearpage
+
+## Hypothesis Testing III: Pivotal Statistic Hypothesis Testing
+
+**Definition 3.1** (Pivotal Statistic). The pivotal statistic is a statistic whose distribution does not depend on some specific parameters.
+
+_Remark._ A statistic should quantify the evidence that the alternative is favored than the null one.
+
+**Definition 3.2** (Pivotal Statistic Hypothesis Testing). Suppose we have a pivotal statistic of the form 
+\begin{equation}
+    \frac{\hat{\theta}-\theta}{\hat{se}(\hat{\theta})}\stackrel{.}{\sim} \mathcal{N}(0,1),
+    \tag{3.1}
+\end{equation}
+we can develop a pivotal statistic hypothesis test by testing 
+$$H_0:\theta=\theta_0\,\,\,\textnormal{vs.}\,\,\,H_1:\theta \neq 0$$
+which is a two-side test where $\theta_0$ is a known value. We can design another useful statistic based on this, say observed statistic, as
+\begin{equation}
+    |Z|=|\frac{\hat{\theta}-\theta_0}{\hat{se}(\hat{\theta})}|
+    \tag{3.2}
+\end{equation}
+
+_Remark._ When $\theta=\theta_0$, we have $\frac{\hat{\theta}-\theta}{\hat{se}(\hat{\theta})}\sim \mathcal{N}(0,1)$. We can also say that:
+\begin{equation}
+\frac{\hat{\theta}-\theta}{{se}(\hat{\theta})}\stackrel{.}{\sim} \mathcal{N}(0,1)
+\tag{3.3}
+\end{equation}
+
+_Remark._ In (3.2), larger |Z| means more evidence against $H_0$ is favored than $H_1$.
+
+**Example 3.3** (Poisson Pivotal Statistic Hypothesis Testing). Consider $X_1,X_2,...,X_n \stackrel{i.i.d.}{\sim} \textnormal{Poisson}(\lambda)$, we want to test
+$$H_0:\lambda=5\,\,\,\textnormal{vs.}\,\,\,H_1:\lambda \neq 5$$
+where we take the parameter under null as $\lambda_0=5$. We can develop the pivotal statistic in general form as
+\begin{equation}
+    \frac{\hat{\lambda}-\lambda}{\sqrt{\hat{\lambda}/n}} \stackrel{.}{\sim} \mathcal{N}(0,1),\,\,\,\textnormal{where}\,\,\hat{\lambda}=\bar{x}
+    \nonumber
+\end{equation}
+When taking $\lambda=5$ here, we have the specific test form as
+\begin{equation}
+    \frac{\hat{\lambda}-5}{\sqrt{\hat{\lambda}/n}} \stackrel{.}{\sim} \mathcal{N}(0,1),\,\,\,\textnormal{where}\,\,\hat{\lambda}=\bar{x}
+    \nonumber
+\end{equation}
+and 
+\begin{equation}
+    \frac{\hat{\lambda}-5}{\sqrt{5/n}} \stackrel{.}{\sim} \mathcal{N}(0,1),\,\,\,\textnormal{where}\,\,\hat{\lambda}=\bar{x}
+    \nonumber
+\end{equation}
+
+**Definition 3.4** (Type I Error Rate for Pivotal Statistic Hypothesis Testing). Suppose $c$ is our significant cut-off, i.e. we detect our hypothesis as significant when $|Z|\geq c$. Let $Z^{*} \sim \mathcal{N}(0,1)$, then our type I error rate now is $\mathbb{P}(|Z^{*}|\geq c)$
+
+_Remark._ Correspondingly, we can write the p-value as $\mathbb{P}(|Z^{*}|)$, which implies the significant regions as $\mathbb{P}_c=\{Z:|Z|\geq c\}$.
+
+_Remark._ We have some general requirements for the pivotal statistic hypothesis test. 
+\begin{enumerate}
+    \item A statistic that quantify evidence against $H_0$ in favor of $H_1$. This requirement is assessed in term of power. Generally, we want higher power which is greater or equal to the type I error rate.
+    \item The (appropriate) distribution of the statistic when $H_0$ is true.
+\end{enumerate}
+
+Another important question to ask here is what would the sampling distribution of the p-value be? If we have the true null distribution identified, then the p-value should follow a Uniform(0,1) distribution when our $H_0$ is true, which is written as 
+\begin{equation}
+    \mathbb{P}(p \leq \alpha)=\alpha\,\,\,\textnormal{when }H_0\textnormal{ is true}
+    \tag{3.4}
+\end{equation}
+To make the error more conservative, we may want
+\begin{equation}
+    \mathbb{P}(p\leq \alpha) \leq \alpha
+    \tag{3.5}
+\end{equation}
+
+**Example 3.5** (One-Side Test). Considering testing
+$$H_0:\theta \leq \theta_0\,\,\textnormal{vs.}\,\,H_1:\theta > \theta_0,$$
+we can design our test statistic as
+\begin{equation}
+    Z = \frac{\hat{\theta}-\theta}{\hat{se}(\theta)}
+    \nonumber
+\end{equation}
+where we have the significant region as
+\begin{equation}
+    \Gamma_c=\{z: z>c\} \nonumber
+\end{equation}
+
+**Example 3.6** (Two-Sample Pivotal Statistic). Suppose $X_1,X_2,...X_n \stackrel{i.i.d.}{\sim}\mathscr{F}_{\theta}$, and $Y_1,Y_2,...,Y_m \stackrel{i.i.d.}{\sim} \mathscr{F}_{\gamma}$, where $X$ and $Y$ are independent. Then we have the MLE for $\theta$ and $\gamma$ as $\hat{\theta}_n$ and $\hat{\gamma}_n$ in accordingly, together with their estimated standard error as $\hat{se}(\hat{\theta}_n)$ and  $\hat{se}(\hat{\gamma}_n)$. Our goal is to conduct inference on $\theta-\gamma$ (i.e. we are looking at whether $\theta$ and $\gamma$ are equal or not). Considering testing
+$$H_0:\theta-\gamma=0\,\,\,\textnormal{vs.}\,\,\,H_1:\theta-\gamma\neq 0,$$
+we can develop test statistic as
+\begin{equation}
+    \frac{\hat{\theta}_n-\hat{\gamma}_m-(\theta-\gamma)}{\sqrt{\hat{se}(\hat{\theta}_n)^2+\hat{se}(\hat{\gamma}_m)^2}}\sim \mathcal{N}(0,1)
+    \nonumber
+\end{equation}
+
+\clearpage
+
+## Bayesian Inference: General Framework
+
+**Motivation.** Frequentiest inference is straightforward for computation. However, the hypothesis testing is hard for frequentist inference. If we have a prior probability distribution on the parameters, we can make the hypothesis testing easier based on likelihood function. This leads us to the idea of Bayesian inference.
+
+_Remark 4.1_ (Bayesian Inference). A prior distribution is assumed for the parameters of interest under the setting of Bayesian inference.
+
+**Example 4.1.** Let random variable $P \sim \textnormal{Uniform}(0,1)$. Suppose we have the data generating distribution as $X|P=p\sim \textnormal{Binomial}(n,p)$. Now we can write down the p.d.f. of $P$ given $X$ as
+\begin{equation}
+    f(p|X=x)=\frac{\mathbb{P}(X=x|P=p)\cdot f(p)}{\mathbb{P}(X=x)}
+    \tag{4.1}
+\end{equation}
+where $f(p)=1\cdot \mathbbm{1}_{p \in[0,1]}$ which is the prior distribution. We name the conditional p.d.f. $f(p|X=x)$ as the posterior distribution, i.e. updated distribution of $p$ given $X=x$. Note that for the denominator we have
+\begin{equation}
+    \mathbb{P}(X=x)=\int \mathbb{P}(X=x|P=p^{*})f(p^{*})dp^{*}
+    \tag{4.2}
+\end{equation}
+which is actually difficult to calculate in the real world. 
+
+More generally, we will assume that $(X_1,X_2,...X_n)|\theta \stackrel{i.i.d.}{\sim}\mathscr{F}_{\theta}$ and $\theta$ is drawn from a prior distribution as $\theta \sim \mathscr{F}_{\tau}$. Then the essential task is to calculate the posterior distribution of $\theta|\underbar{X}=\underbar{x}$ as
+\begin{equation}
+    f(\theta|\underbar{x})=\frac{f(\underbar{x}|\theta)f(\theta)}{f(\underbar{x})}=\frac{f(\underbar{x}|\theta)f(\theta)}{\int f(\underbar{x}|\theta^{*})f(\theta^{*})d\theta^{*}}
+    \tag{4.3}
+\end{equation}
+If there is indeed a "true" $\theta$, then if certain regularity conditions are met, then $f(\theta|\underbar{x})$ will concentrate around the true $\theta$ as $n\to \infty$.
+
+**Example 4.2** (Bernoulli-Uniform). Suppose $\boldsymbol{X}=(X_1,...,X_n)\stackrel{i.i.d.}{\sim}\textnormal{Bernoulli}(\theta)$, where $\theta \in (0,1)$. The prior here is $\theta \sim \textnormal{Uniform}(0,1)$, which is a Beta(1,1) distribution. We can show that the posterior is also a Beta distribution. Here, we can write the likelihood of the prior / prior density as
+$$\pi(\theta)=\mathbbm{1}_{0\leq \theta \leq 1},\,\,\,\mathcal{L}(\theta|\underbar{x})=\theta^s(1-\theta)^{n-s}$$
+where $s=\sum_{i=1}^n\underbar{x}_i$. We can write the posterior as
+$$\pi(\theta|\underbar{x})=\frac{f(\underbar{x}|\theta)\pi(\theta)}{\int f(\underbar{x}|\theta)\pi(\theta)d\theta}=\frac{\theta^s(1-\theta)^{n-s}\mathbbm{1}_{0\leq \theta\leq 1}}{\int_0^1\theta^s(1-\theta)^{n-s}d\theta}=B(s+1,n-s+1)^{-1}\theta^s(1-\theta)^{n-s}\mathbbm{1}_{0\leq \theta\leq 1}$$
+where $B(a,b)=\Gamma(a)\Gamma(b)/\Gamma(a+b)$ is the beta function. The posterior is the density of the Beta(s+1,n-s+1) distribution.
+
+_Remark 4.3._ The basis of Bayesian Inference is the Bayes Theorem. As the consequence of Bayes Theorem, we can conclude that
+- The posterior distribution would only involve the data through likelihood. Therefore, the sufficiency and likelihood principles are automatically satisfied.
+- Posterior distribution is distribution of $\theta$ given all the observed data.
+- If we have two sets of data $\underbar{x}$ and $\underbar{y}$ s.t. $\mathcal{L}(\theta|\underbar{x})\propto \mathcal{L}(\theta|\underbar{y})$, then we can claim that $\underbar{x}$ and $\underbar{y}$ will yield the same posterior distribution given the same priors, i.e. $\pi(\theta|\underbar{x})=\pi(\theta|\underbar{y})$.
+
+# References
+
+[1] Bickel, P. J. and K. A. Doksum (2015): Mathematical Statistics, Prentice Hall.
+
+[2] Casella, G. and R. L. Berger (2002): Statistical Inference, Duxbury.
+
+[3] Lehmann, E. L. (1999): Elements of Large-Sample Theory, Springer.
+
+
+
+```{r sessionInformation}
+sessionInfo()
+```
+

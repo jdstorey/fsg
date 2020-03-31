@@ -1,0 +1,491 @@
+---
+title: "QCB 408 / 508 -- Notes on Week 4"
+author: "Yingzi Huang"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+\providecommand{\E}{\operatorname{E}}
+\providecommand{\V}{\operatorname{Var}}
+\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\se}{\operatorname{se}}
+\providecommand{\logit}{\operatorname{logit}}
+\providecommand{\iid}{\; \stackrel{\text{iid}}{\sim}\;}
+\providecommand{\asim}{\; \stackrel{.}{\sim}\;}
+\providecommand{\xs}{x_1, x_2, \ldots, x_n}
+\providecommand{\Xs}{X_1, X_2, \ldots, X_n}
+\providecommand{\bB}{\boldsymbol{B}}
+\providecommand{\bb}{\boldsymbol{\beta}}
+\providecommand{\bx}{\boldsymbol{x}}
+\providecommand{\bX}{\boldsymbol{X}}
+\providecommand{\by}{\boldsymbol{y}}
+\providecommand{\bY}{\boldsymbol{Y}}
+\providecommand{\bz}{\boldsymbol{z}}
+\providecommand{\bZ}{\boldsymbol{Z}}
+\providecommand{\be}{\boldsymbol{e}}
+\providecommand{\bE}{\boldsymbol{E}}
+\providecommand{\bs}{\boldsymbol{s}}
+\providecommand{\bS}{\boldsymbol{S}}
+\providecommand{\bP}{\boldsymbol{P}}
+\providecommand{\bI}{\boldsymbol{I}}
+\providecommand{\bD}{\boldsymbol{D}}
+\providecommand{\bd}{\boldsymbol{d}}
+\providecommand{\bW}{\boldsymbol{W}}
+\providecommand{\bw}{\boldsymbol{w}}
+\providecommand{\bM}{\boldsymbol{M}}
+\providecommand{\bPhi}{\boldsymbol{\Phi}}
+\providecommand{\bphi}{\boldsymbol{\phi}}
+\providecommand{\bN}{\boldsymbol{N}}
+\providecommand{\bR}{\boldsymbol{R}}
+\providecommand{\bu}{\boldsymbol{u}}
+\providecommand{\bU}{\boldsymbol{U}}
+\providecommand{\bv}{\boldsymbol{v}}
+\providecommand{\bV}{\boldsymbol{V}}
+\providecommand{\bO}{\boldsymbol{0}}
+\providecommand{\bOmega}{\boldsymbol{\Omega}}
+\providecommand{\bLambda}{\boldsymbol{\Lambda}}
+\providecommand{\bSig}{\boldsymbol{\Sigma}}
+\providecommand{\bSigma}{\boldsymbol{\Sigma}}
+\providecommand{\bt}{\boldsymbol{\theta}}
+\providecommand{\bT}{\boldsymbol{\Theta}}
+\providecommand{\bpi}{\boldsymbol{\pi}}
+\providecommand{\argmax}{\text{argmax}}
+\providecommand{\KL}{\text{KL}}
+\providecommand{\fdr}{\text{FDR}}
+\providecommand{\pfdr}{{\rm pFDR}}
+\providecommand{\mfdr}{{\rm mFDR}}
+\providecommand{\bh}{\hat}
+\providecommand{\dd}{\lambda}
+\providecommand{\q}{\operatorname{q}}
+
+```{r, message=FALSE, echo=FALSE, cache=FALSE}
+# this makes the R output formatted the same as Foundations of Applied Statistics
+source("https://raw.githubusercontent.com/jdstorey/fas/master/customization/knitr_options.R")
+# load libraries used in this chunk
+library(gapminder) 
+```
+
+## Summary
+* Likelihood & maximim likelihood estimation(MLE)
+  + Sufficient statistic
+  + Fisher Information
+  + Optimality
+  + Delta Method
+* Exponential family distribution (EFDs)
+  + Natural Single Parameter EFD
+  + Calculating Moments
+  + Maximum Likelihood
+
+* Frequentist inference from pivital statistics
+  + Point estimates
+  + Confidence intervals
+  + Hypothesis tests (next week)
+
+# Likelihood & maximim likelihood estimation(MLE)
+
+## Likelihood Function
+
+Suppose random variable $X_1, X_2 \stackrel{iid}{\sim} F_\theta$,
+$\theta$ parameter should be informative about what we want to know about the population.
+\
+$(X_1,X_2,...,X_n)\sim F_\theta$ is a joint distribution. 
+\
+There are two levels in a study:
+
+1. observed data: $x_1,x_2,...x-n$
+2. random variables $X_1,X_2,...X_n$ that model the obtained data
+
+Suppose that we observe $x_1, x_2, \ldots, x_n$ according to the model $X_1, X_2, \ldots, X_n \sim F_{\theta}$. 
+The joint pdf is $f(\boldsymbol{x} ; \theta)$.  We view the pdf as being a function of $\boldsymbol{x}$ for a fixed $\theta$.
+
+The **likelihood function** is obtained by reversing the arguments and viewing this as a function of $\theta$ for a fixed, observed $\boldsymbol{x}$:
+
+$$
+L(\theta ; \boldsymbol{x}) = f(\boldsymbol{x} ; \theta)
+$$ 
+
+### Log-Likelihood Function
+
+$$ 
+\ell(\theta ; \boldsymbol{x}) = \log L(\theta ; \boldsymbol{x})
+$$
+
+If the data are i.i.d., we have
+
+$$ 
+\begin{aligned}
+\ell(\theta;\boldsymbol{x}) &=\log L(\theta;\boldsymbol{x})\\
+&=\log(f(\boldsymbol{x};\theta))\\
+&=\log \prod_{i=1}^n f(x_i;\theta) \\
+&= \sum_{i=1}^n\log f(x_i;\theta)\\
+&=\sum_{i=1}^n\ell(\theta ; x_i)
+\end{aligned}
+$$
+
+
+## Sufficient Statistic
+A statistic $T(\boldsymbol{x})$ is any function of the data. 
+$T(\boldsymbol{x})$ is sufficient if $\boldsymbol{x}|T(\boldsymbol{x})$  does not depend on $\theta$
+If $f(\boldsymbol{x} ; \theta) = g(T(\boldsymbol{x}))h(\boldsymbol{x}),$ then $T(\boldsymbol{x})$ is sufficient.
+$L(\theta ; \boldsymbol{x}) = g(T(\boldsymbol{x}))h(\boldsymbol{x})\displaystyle \propto L(\theta ; T(\boldsymbol{x}))$
+
+
+### Other topics:
+- Minimal sufficient statistics
+- complete sufficient statistics
+- Ancillary statistics
+- Basu's theorem
+
+
+## Maximum Likelihood Estimation
+
+The **maximum likelihood estimate** is the value of $\theta$ that maximizes $L(\theta ; \boldsymbol{x})$ for an observe data set $\boldsymbol{x}$.
+$$
+\begin{aligned}
+\hat{\theta}_{{\rm MLE}} & = \operatorname{argmax}_{\theta} L(\theta ; \boldsymbol{x}) \\
+ & = \operatorname{argmax}_{\theta} \ell (\theta ; \boldsymbol{x}) \\
+ & = \operatorname{argmax}_{\theta} L (\theta ; T(\boldsymbol{x}))
+\end{aligned}
+$$
+where the last equality holds for sufficient statistics $T(\boldsymbol{x})$.
+
+
+### Example:
+$$
+\begin{aligned}
+x&\sim \rm Binomial(n,p)\\
+L(p;x) &= \binom nx p^x (1-p)^{n-x} \\
+&\propto p^x (1-p)^{n-x}\\
+\\
+\ell(p;x) &\propto x\log(p)+(n-x)\log(1-p)
+\end{aligned}
+$$
+solve for p when 
+$$
+\begin{aligned}
+\frac{d}{dp}\ell(p;x)&=0 \Rightarrow \hat{p}_{MLE} = \frac{x}{n}\\
+\frac{\hat{p}-p}{\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}}&\sim \textrm{Normal}(0,1)\textrm{ for large n}
+\end{aligned}
+$$
+Suppose we observe real life data $\hat{p}=0.32$,
+$$
+\begin{aligned}
+E[\hat{p}]&=p\\
+\textrm{Var}(\hat{p})&=\frac{p(1-p)}{n}\\
+\hat{p}&=\frac{x}{n}
+\end{aligned}
+$$
+
+We want to obtain the "sampling distribution" of $\hat{p}$: the distribution of $\hat{p}=\frac{x}{n}$ when the study is repeated. 
+p of the population is unknown, so the distribution of $\hat{x}$. 
+
+However, a **pivotal statistic** does not involve the unknown p. 
+$$
+\frac{\hat{p}-p}{\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}}\sim \textrm{Normal}(0,1)
+$$
+Note that in general for a rv $Y$ it is the case that $(Y - \operatorname{E}[Y])/\sqrt{\operatorname{Var}(Y)}$ has population mean 0 and variance 1.
+
+
+## Properties
+
+When "certain regularity assumptions" are true, the following properties hold for MLEs.
+
+- Consistent
+- Equivariant
+- Asymptotically Normal
+- Asymptotically Efficient (or Optimal)
+- Approximate Bayes Estimator
+
+We will assume that the "certain regularity assumptions" are true in the following results.
+
+## MLE is "consistent":
+An estimator is consistent if it converges in probability to the true parameter value.  MLEs are consistent so that 
+as $n \rightarrow \infty$,
+
+$$
+\hat{\theta}_n \stackrel{P}{\rightarrow} \theta
+$$ 
+where $\theta$ is the true value.
+
+
+## Equivariance: 
+
+If $\hat{\theta}_n$ is the MLE of $\theta$, then $g\left(\hat{\theta}_n\right)$ is the MLE of $g(\theta)$.
+
+### Example:  
+For the Normal$(\mu, \sigma^2)$ the MLE of $\mu$ is $\overline{X}$.  Therefore, the MLE of $e^\mu$ is $e^{\overline{X}}$.
+
+Similarly, for Binomial$(n, p)$, $\hat{p}=\frac{x}{n}$. $n\hat{p}(1-\hat{p})$ is the MLE of Var$(x)=np(1-p)$.
+
+## Fisher Information
+The **Fisher Information** of $X_1, X_2, \ldots, X_n \stackrel{{\rm iid}}{\sim} F_{\theta}$ is:
+\ 
+\begin{align*}
+I_n(\theta) & = \operatorname{Var}\left( \frac{d}{d\theta} \log f(\boldsymbol{X}; \theta) \right)\\
+&= \sum_{i=1}^n \operatorname{Var}\left( \frac{d}{d\theta} \log f(X_i; \theta) \right) \\
+& = - \operatorname{E}\left( \frac{d^2}{d\theta^2} \log f(\boldsymbol{X}; \theta) \right) \\
+&= - \sum_{i=1}^n \operatorname{E}\left( \frac{d^2}{d\theta^2} \log f(X_i; \theta) \right)
+\end{align*}
+
+## Standard Error
+
+In general, the **standard error** of an estimator is the standard deviation of sampling distribution of an estimate or statistic.
+
+For MLEs, the standard error is $\sqrt{\V\left(\hat{\theta}_n\right)}$. It has the approximation
+
+$$\operatorname{se}\left(\hat{\theta}_n\right) \approx \frac{1}{\sqrt{I_n(\theta)}}$$
+and the standard error estimate of an MLE is
+
+$$\hat{\operatorname{se}}\left(\hat{\theta}_n\right) = \frac{1}{\sqrt{I_n\left(\hat{\theta}_n\right)}}.$$
+
+## Asymptotic Normal
+
+MLEs converge in distribution to the Normal distribution.  Specifically, as $n \rightarrow \infty$,
+
+$$\frac{\hat{\theta}_n - \theta}{\se\left(\hat{\theta}_n\right)} \stackrel{D}{\longrightarrow} \mbox{Normal}(0,1)$$
+and
+
+$$\frac{\hat{\theta}_n - \theta}{\hat{\se}\left(\hat{\theta}_n\right)} \stackrel{D}{\longrightarrow} \mbox{Normal}(0,1).$$
+
+### Example: 
+$X \sim \textrm{Binomial}(n,p)$, $I_n(p)=\frac{n}{p(1-p)}$
+
+
+## Asymptotic Pivotal Statistic:
+By the previous result, we now have an approximate (asymptotic) pivotal statistic:
+
+$$Z = \frac{\hat{\theta}_n - \theta}{\hat{\se}\left(\hat{\theta}_n\right)} \stackrel{D}{\longrightarrow} \mbox{Normal}(0,1).$$
+
+This allows us to construct approximate confidence intervals and hypothesis test as in the idealized $\mbox{Normal}(\mu, \sigma^2)$ (with $\sigma^2$ known) scenario from the previous sections.
+
+## Optimality
+
+The MLE is such that
+
+$$ \sqrt{n} \left( \hat{\theta}_n - \theta \right) \stackrel{D}{\longrightarrow} \mbox{Normal}(0, \tau^2)$$
+
+for some $\tau^2$.  Suppose that $\tilde{\theta}_n$ is any other estimate so that 
+
+$$ \sqrt{n} \left( \tilde{\theta}_n - \theta \right) \stackrel{D}{\longrightarrow} \mbox{Normal}(0, \gamma^2).$$
+
+It follows that 
+
+$$\frac{\tau^2}{\gamma^2} \leq 1.$$  
+
+## Delta Method
+
+Suppose that $g()$ is a differentiable function and $g'(\theta) \not= 0$.  Note that for some $t$ in a neighborhood of $\theta$, a first-order Taylor expansion tells us that $g(t) \approx g'(\theta) (t - \theta)$.  From this we know that 
+
+$$\V\left(g(\hat{\theta}_n) \right) \approx g'(\theta)^2 \V(\hat{\theta}_n)$$
+
+The delta method shows that $\hat{\se}\left(g(\hat{\theta}_n)\right) = |g'(\hat{\theta}_n)| \hat{\se}\left(\hat{\theta}_n\right)$ and
+
+$$\frac{g(\hat{\theta}_n) - g(\theta)}{|g'(\hat{\theta}_n)| \hat{\se}\left(\hat{\theta}_n\right)} \stackrel{D}{\longrightarrow} \mbox{Normal}(0,1).$$
+
+
+### Delta Method Example
+
+Suppose $X \sim \mbox{Binomial}(n,p)$ which has MLE, $\hat{p} = X/n$.  By the equivariance property, the MLE of the per-trial variance $p(1-p)$ is $\hat{p}(1-\hat{p})$.  It can be calculated that $\hat{\se}(\hat{p}) = \sqrt{\hat{p}(1-\hat{p})/n}$.
+
+Let $g(p) = p(1-p)$. Then $g'(p) = 1-2p$.  By the delta method,
+
+$$\hat{\se}\left( \hat{p}(1-\hat{p}) \right) = \left| (1-2\hat{p}) \right| \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}.$$
+
+## Summary of MLE Statistics
+
+In all of these scenarios, $Z$ converges in distribution to Normal$(0,1)$ for large $n$.
+
+| Distribution |  MLE  |  Std Err  |  $Z$ Statistic  |
+| ------------ | :---------: | :-------: | :-------------: |
+| Binomial$(n,p)$ | $\hat{p} = X/n$ | $\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$ | $\frac{\hat{p} - p}{\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}}$ |
+| Normal$(\mu, \sigma^2)$ | $\hat{\mu} = \overline{X}$ | $\frac{\hat{\sigma}}{\sqrt{n}}$ | $\frac{\hat{\mu} - \mu}{\hat{\sigma}/\sqrt{n}}$ |
+| Poisson$(\lambda)$ | $\hat{\lambda} = \overline{X}$ | $\sqrt{\frac{\hat{\lambda}}{n}}$ | $\frac{\hat{\lambda} - \lambda}{\sqrt{\hat{\lambda}/n}}$ |
+
+\clearpage
+
+# Exponential Family Distributions (EFD)
+**Exponential family distributions** (EFDs) provide a generalized parameterization and form of a very large class of distributions used in inference. 
+
+## Definition
+
+If $X$ follows an EFD parameterized on the observed sclae by $\boldsymbol{\theta}$, then it has pdf of the form
+
+$$
+f(x ; \boldsymbol{\theta}) =
+h(x) \exp \left\{ \sum_{k=1}^d \eta_k(\boldsymbol{\theta}) T_k(x) - A(\boldsymbol{\eta}) \right\}
+$$
+
+where $\boldsymbol{\theta}$ is a vector of parameters, $\{T_k(x)\}$ are sufficient statistics, $A(\boldsymbol{\eta})$ is the cumulant generating function
+
+The functions $\eta_k(\boldsymbol{\theta})$ for $k=1, \ldots, d$ map the usual parameters to the "natural parameters".
+
+$\{T_k(x)\}$ are sufficient statistics for $\{\eta_k\}$ due to the factorization theorem.
+
+$A(\boldsymbol{\eta})$ is sometimes called the "log normalizer" because
+
+$$A(\boldsymbol{\eta}) = \log \int h(x) \exp \left\{ \sum_{k=1}^d \eta_k(\boldsymbol{\theta}) T_k(x) \right\}.$$
+
+## Natural Single Parameter EFD
+\
+A natural single parameter EFD simplifies to the scenario where $d=1$ and $T(x) = x$:
+\
+$$
+f(x ; \eta) =
+h(x) \exp \left\{ \eta x - A(\eta) \right\}
+$$
+
+### Example: Bernoulli
+
+\begin{align*}
+f(x ; p) & = p^x (1-p)^{1-x} \\
+ & = \exp \left\{ x \log(p) + (1-x) \log(1-p) \right\} \\
+ & = \exp \left\{ x \log\left( \frac{p}{1-p} \right) + \log(1-p) \right\}
+\end{align*}
+
+
+$\eta(p) = \log\left( \frac{p}{1-p} \right)$
+
+$T(x) = x$ 
+
+$A(\eta) = \log\left(1 + e^\eta\right)$
+
+### Example: Normal
+
+\begin{align*}
+f(x ; \mu, \sigma^2) & = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\left\{-\frac{(x-\mu)^2}{2 \sigma^2}\right\} \\
+ & = \frac{1}{\sqrt{2 \pi}} \exp\left\{\frac{\mu}{\sigma^2} x - \frac{1}{2 \sigma^2} x^2 - \log(\sigma) - \frac{\mu^2}{2 \sigma^2}\right\}
+\end{align*}
+
+$\boldsymbol{\eta}(\mu, \sigma^2) = \left(\frac{\mu}{\sigma^2}, - \frac{1}{2 \sigma^2} \right)^T$
+
+$\boldsymbol{T}(x) = \left(x, x^2\right)^T$ 
+
+$A(\boldsymbol{\eta}) = \log(\sigma) + \frac{\mu^2}{2 \sigma^2} = -\frac{1}{2} \log(-2 \eta_2) - \frac{\eta_1^2}{4\eta_2}$
+
+
+## Calculating Moments
+
+$$
+\frac{d}{d \eta_k} A(\boldsymbol{\eta}) = \E[T_k(X)]
+$$
+\
+$$
+\frac{d^2}{d \eta_k^2} A(\boldsymbol{\eta}) = \V[T_k(X)]
+$$
+
+
+### Example: Normal
+
+For $X \sim \mbox{Normal}(\mu, \sigma^2)$, 
+
+$$\E[X] = \frac{d}{d \eta_1} A(\boldsymbol{\eta}) = -\frac{\eta_1}{2 \eta_2} = \mu,$$
+
+$$\V(X) = \frac{d^2}{d \eta_1^2} A(\boldsymbol{\eta}) = -\frac{1}{2 \eta_2} = \sigma^2.$$
+
+
+## Maximum Likelihood
+
+Suppose $X_1, X_2, \ldots, X_n$ are iid from some EFD.  Then,
+
+$$
+\ell(\boldsymbol{\eta} ; \boldsymbol{x}) = \sum_{i=1}^n \left[ \log h(x_i) + \sum_{k=1}^d \eta_k(\boldsymbol{\theta}) T_k(x_i) - A(\boldsymbol{\eta})  \right]
+$$
+
+$$
+\frac{d}{d \eta_k} \ell(\boldsymbol{\eta} ; \boldsymbol{x}) = \sum_{i=1}^n T_k(x_i) - n \frac{d}{d \eta_k} A(\boldsymbol{\eta})
+$$
+Setting the second equation to 0, it follows that the MLE of $\eta_k$ is the solution to 
+
+$$
+\frac{1}{n} \sum_{i=1}^n T_k(x_i) = \frac{d}{d \eta_k} A(\boldsymbol{\eta}).
+$$
+\clearpage
+
+# Statistical Inference
+\
+We have observed data that is modeled by a probability generation process. The probability distribution has parameters informative about the population. 
+**Statistical inference** reverse engineers this forward to estimate parameters and provide measures of uncertainty about the estimate. 
+
+- A **parameter** is a number that describes a population
+    - It is often a fixed number and we usually do not know its value
+- A **statistic** is a number calculated from a sample of data
+    - A statistic is used to estimate a parameter
+- The **sampling distribution** of a statistic is the probability disribution of the statistic under repeated realizations of the data from the assumed data generating probability distribution.
+
+*The sampling distribution connects a calculated statistic to the population (probability model).*
+
+## Inference Goals and Strategies
+Data collected in such a way that there exists a reasonable probability model for this process that involves parameters informative about the population.  
+so we have data $x_1,x_2,...x_n$ and model $X_1,X_2,...,X_n \sim \textrm{F}_\theta$
+
+Common Goals:
+
+1. Form point estimates the parameter $\theta$
+2. Confidence interval of $\theta$
+   + Quantify uncertainty on the estimates
+3. Hypotheses test on the parameters
+   + assesses specific value(s) of $\theta$
+
+## 1. Point Estimation
+\
+See example MLE $\hat{\theta_n}$
+\
+
+## 2. Confidence Intervals (CI)
+Once we have a point estimate of a parameter, we would like to know  its uncertainty.
+We interpret this measure of uncertainty in terms of hypothetical repetitions of the sampling scheme we used to collect the original data set.
+
+### for MLEs: 
+Confidence intervals take the form
+
+$$(\hat{\theta} - C_{\ell}, \hat{\theta} + C_{u})$$
+where
+$${\rm Pr}(\hat{\theta} - C_{\ell} \leq \theta \leq \hat{\theta} + C_{u};\theta)$$
+forms the "level" or coverage probablity. 
+
+### Approximate 95% CI for MLEs:
+$$
+\begin{aligned}
+0.95 &\approx {\rm Pr}(-1.96 \leq \frac{\hat{\theta}-\theta}{\hat{se}(\hat{\theta})} \leq 1.96) \\
+&={\rm Pr}(-1.96\hat{se}(\hat{\theta}) \leq \hat{\theta}-\theta \leq 1.96\hat{se}(\hat{\theta})) \\
+&={\rm Pr}(\theta-1.96\hat{se}(\hat{\theta})\leq \hat{\theta} \leq \theta+1.96\hat{se}(\hat{\theta})\\
+&={\rm Pr}(-1.96\hat{se}(\hat{\theta})\leq \theta-\hat{\theta} \leq 1.96\hat{se}(\hat{\theta})\\
+&={\rm Pr}(\hat{\theta}-1.96\hat{se}(\hat{\theta})\leq \theta \leq \hat{\theta}+1.96\hat{se}(\hat{\theta})\\
+\end{aligned}
+$$
+So 95% approx. CI is 
+$$ (\hat{\theta}-1.96\hat{se}(\hat{\theta}), \hat{\theta}+1.96\hat{se}(\hat{\theta})$$
+
+## $(1-\alpha)$-Level CIs
+
+If $Z \sim$ Normal(0,1), then ${\rm Pr}(-|z_{\alpha/2}| \leq Z \leq |z_{\alpha/2}|) = 1-\alpha.$
+
+Repeating the steps from the 95% CI case, we get the following is a $(1-\alpha)$-Level CI for $\hat{\theta}$:
+
+$$\left(\hat{\theta} - |z_{\alpha/2}| \hat{se}(\hat{\theta}) , \hat{\theta} + |z_{\alpha/2}| \hat{se}(\hat{\theta})\right)$$
+$z_\alpha$ is the $\alpha$-percentile of Normal(0,1). 
+
+
+## One-Sided CIs
+
+The CIs we have considered so far are "two-sided".  Sometimes we are also interested in "one-sided" CIs. 
+
+If $Z \sim$ Normal(0,1), then $1-\alpha = {\rm Pr}(Z \geq -|z_{\alpha}|)$ and $1-\alpha = {\rm Pr}(Z \leq |z_{\alpha}|).$  We can use this fact along with the earlier derivations to show that the following are valid CIs:
+
+$$(1-\alpha)\mbox{-level upper: } \left(-\infty, \hat{\theta} + |z_{\alpha}| \hat{se}(\hat{\theta})\right)$$
+
+$$(1-\alpha)\mbox{-level lower: } \left(\hat{\theta} - |z_{\alpha}| \hat{se}(\hat{\theta}), \infty\right)$$
+
+\clearpage
+## Session Information
+
+```{r}
+sessionInfo()
+```
+
+  
+  
+  
