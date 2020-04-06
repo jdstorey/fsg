@@ -115,7 +115,7 @@ Reading:
 
 - [FAS](https://jdstorey.org/fas/index.html), Chapters 9, 54--59
 
-### Week 8
+### Week 9
 
 Topics:  
 
@@ -152,7 +152,7 @@ R4DS | [R for Data Science](http://r4ds.had.co.nz)
 | Assignment    | Due | 
 | --------------|---------------------|
 | Homework 1    | 11:59PM on March 5  |
-| Homework 2    | 11:59PM on April 16   | 
+| Homework 2    | 11:59PM on April 23   | 
 | Scribed Notes | See syllabus |
 | Take Home Final Exam | 11:59PM on May 16 <br> (handed out 12:00PM noon on May 13)   |
 
