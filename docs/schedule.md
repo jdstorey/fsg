@@ -124,7 +124,7 @@ Topics:
 
 Reading: 
 
-- [FAS](https://jdstorey.org/fas/index.html), 60--63
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 60--63
 
 ## Text book abbreviations used above
 
