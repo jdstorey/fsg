@@ -113,8 +113,18 @@ Topics:
 
 Reading: 
 
-- [FAS](https://jdstorey.org/fas/index.html), Chapters 9, 54--62
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 9, 54--59
 
+### Week 8
+
+Topics:  
+
+- Linear statistical modeling
+- Genetic models of quantitative traits
+
+Reading: 
+
+- [FAS](https://jdstorey.org/fas/index.html), 60--63
 
 ## Text book abbreviations used above
 
