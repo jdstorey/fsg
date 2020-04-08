@@ -125,6 +125,7 @@ Topics:
 Reading: 
 
 - [FAS](https://jdstorey.org/fas/index.html), Chapters 60--63
+- [MSMGA](https://catalog.princeton.edu/catalog/1170367), Chapters 5.1, 5.2, 6.3, 8.1--8.3
 
 ## Text book abbreviations used above
 
