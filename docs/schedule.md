@@ -127,6 +127,37 @@ Reading:
 - [FAS](https://jdstorey.org/fas/index.html), Chapters 60--63
 - [MSMGA](https://catalog.princeton.edu/catalog/1170367), Chapters 5.1, 5.2, 6.3, 8.1--8.3
 
+### Week 10
+
+Topics:
+
+- Generalized linear models
+- Nonparametric regression
+- Generalized additive models
+- Bootstrapping model fits
+
+Reading: 
+
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 64--69
+
+
+### Week 11
+
+Topics:
+
+- High-dimensional data and models
+- Shrinkage and empirical Bayes
+- False discovery rates
+- Ridge regression
+- Lasso regression
+
+Reading: 
+
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 70--76
+
+
+Supplemental Reading: [Stigler (1990)](http://projecteuclid.org/euclid.ss/1177012274); [Storey and Tibshirani (2003)](http://www.pnas.org/content/100/16/9440.full)
+
 ## Text book abbreviations used above
 
 | Abbreviation | Full Title |
