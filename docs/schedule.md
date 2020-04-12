@@ -156,7 +156,10 @@ Reading:
 - [FAS](https://jdstorey.org/fas/index.html), Chapters 70--76
 
 
-Supplemental Reading: [Stigler (1990)](http://projecteuclid.org/euclid.ss/1177012274); [Storey and Tibshirani (2003)](http://www.pnas.org/content/100/16/9440.full)
+Optional Reading:  
+
+- [Stigler (1990)](http://projecteuclid.org/euclid.ss/1177012274)
+- [Storey and Tibshirani (2003)](http://www.pnas.org/content/100/16/9440.full)
 
 ## Text book abbreviations used above
 
