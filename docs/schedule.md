@@ -155,7 +155,6 @@ Reading:
 
 - [FAS](https://jdstorey.org/fas/index.html), Chapters 70--76
 
-
 Optional Reading:  
 
 - [Stigler (1990)](http://projecteuclid.org/euclid.ss/1177012274)

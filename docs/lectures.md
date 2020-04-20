@@ -17,7 +17,7 @@ PDF files of the handwritten lecture notes will be posted here as they become av
 |  8 | [week08.pdf](./lecture_notes/week08.pdf) |  |  
 |  9 | [week09.pdf](./lecture_notes/week09.pdf) |  |  
 | 10 | [week10.pdf](./lecture_notes/week10.pdf) |  |  
-| 11 |  |  |  
+| 11 | [week11.pdf](./lecture_notes/week11.pdf) |  |  
 | 12 |  |  |  
 
 
