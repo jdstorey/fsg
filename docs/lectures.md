@@ -18,7 +18,7 @@ PDF files of the handwritten lecture notes will be posted here as they become av
 |  9 | [week09.pdf](./lecture_notes/week09.pdf) |  |  
 | 10 | [week10.pdf](./lecture_notes/week10.pdf) |  |  
 | 11 | [week11.pdf](./lecture_notes/week11.pdf) |  |  
-| 12 |  |  |  
+| 12 | [week12.pdf](./lecture_notes/week12.pdf) |  |  
 
 
 If you wish to view lecture slides from previous years of QCB 408 / 508, they can be found at <a href='https://jdstorey.github.io/asdscourse2017/lectures/' target='_blank'>https://jdstorey.github.io/asdscourse2017/lectures/</a>. Note that the topics covered are not necessarily identical or in the same order.

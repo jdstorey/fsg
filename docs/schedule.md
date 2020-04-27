@@ -160,6 +160,26 @@ Optional Reading:
 - [Stigler (1990)](http://projecteuclid.org/euclid.ss/1177012274)
 - [Storey and Tibshirani (2003)](http://www.pnas.org/content/100/16/9440.full)
 
+### Week 12
+
+Topics:
+
+- High-dimensional latent variable models
+- Jackstraw
+- Surrogate variable analysis
+- Causal inference
+
+Reading: 
+
+- [FAS](https://jdstorey.org/fas/index.html), Chapters 7--8, 77--79
+
+Optional Reading: 
+
+- [Chung and Storey (2014)](https://dx.doi.org/10.1093/bioinformatics/btu674)
+- [Leek and Storey (2007)](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0030161)
+- [Holland (1986)](https://www.jstor.org/stable/2289064)
+
+
 ## Text book abbreviations used above
 
 | Abbreviation | Full Title |
